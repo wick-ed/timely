@@ -1,0 +1,3 @@
+#!/bin/bash
+
+php /Users/wickb/Workspace/timely/bin/timely.php $*

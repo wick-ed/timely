@@ -1,0 +1,31 @@
+{
+	"name" : "wick-ed/timely",
+	"description" : "Console interface for time tracking",
+	"keywords" : [
+		"time booking",
+		"tickets",
+		"schedule",
+		"time"
+	],
+	"license" : "OSL 3.0",
+	"authors" : [{
+			"name" : "Bernhard Wick",
+			"email" : "wick.b@hotmail.de",
+			"homepage" : "https://github.com/wick-ed",
+			"role" : "Developer"
+		}
+	],
+	"require" : {
+		"symfony/console" : "~3.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Wicked\\Timely\\" : "src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Wicked\\Timely\\" : "tests/"
+		}
+	}
+}
