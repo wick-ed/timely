@@ -31,26 +31,16 @@ class Booking
 {
 
     /**
+     * Id of a potential ticket the booking is for
      *
-     * @var unknown
-     */
-    const LINE_BREAK = ';';
-
-    /**
-     *
-     * @var unknown
-     */
-    const SEPARATOR = ' | ';
-
-    /**
-     *
-     * @var unknown
+     * @var string|null $ticketId
      */
     protected $ticketId;
 
     /**
+     * Comment regarding the current booking
      *
-     * @var unknown
+     * @var string $comment
      */
     protected $comment;
 
@@ -84,7 +74,12 @@ class Booking
         return $this->comment;
     }
 
-    public function __construct($ticketId, $comment)
+    /**
+     *
+     * @param unknown $comment
+     * @param unknown $ticketId
+     */
+    public function __construct($comment, $ticketId = null)
     {
         // get the arguments
         $this->ticketId = $ticketId;
@@ -92,22 +87,5 @@ class Booking
 
         // get the current date and time
         $this->time = time();
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return implode(
-            self::SEPARATOR,
-            array(
-                $this->getTime(),
-                $this->getTicketId(),
-                $this->getComment()
-            )
-        ) . self::LINE_BREAK . '
-';
     }
 }

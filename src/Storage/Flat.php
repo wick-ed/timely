@@ -33,6 +33,20 @@ class Flat
 {
 
     /**
+     * Default character for a line break in the format
+     *
+     * @var string LINE_BREAK
+     */
+    const LINE_BREAK = ';';
+
+    /**
+     * Default character sequence for segment separation
+     *
+     * @var string SEPARATOR
+     */
+    const SEPARATOR = ' | ';
+
+    /**
      * Name of the log file
      *
      * @var string DATA_NAME
@@ -68,8 +82,19 @@ class Flat
      */
     public function store(Booking $booking)
     {
+        $bookString = implode(
+            self::SEPARATOR,
+            array(
+                $booking->getTime(),
+                $booking->getTicketId(),
+                $booking->getComment()
+            )
+        ) . self::LINE_BREAK . '
+';
+
+        // write the new booking to the beginning of the file
         $path = $this->getLogFilePath();
-        file_put_contents($path, $booking->__toString() . file_get_contents($path));
+        file_put_contents($path, $bookString . file_get_contents($path));
     }
 
     /**

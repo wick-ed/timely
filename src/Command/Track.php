@@ -28,7 +28,7 @@ use Wicked\Timely\Entities\Booking;
 use Wicked\Timely\Storage\StorageFactory;
 
 /**
- * Track command
+ * Class for the "track" command. Command is used to track time bookings
  *
  * @author    Bernhard Wick <wick.b@hotmail.de>
  * @copyright 2016 Bernhard Wick
@@ -39,7 +39,7 @@ class Track extends Command
 {
 
     /**
-     *
+     * Configures the "show" command
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::configure()
@@ -62,6 +62,7 @@ class Track extends Command
     }
 
     /**
+     * Execute the command
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::execute()
@@ -75,7 +76,7 @@ class Track extends Command
         $result = 'Tracking successful';
         try {
             // create a new booking instance
-            $booking = new Booking($ticket, $comment);
+            $booking = new Booking($comment, $ticket);
 
             // get the configured storage instance and store the booking
             $storage = StorageFactory::getStorage();

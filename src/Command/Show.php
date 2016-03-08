@@ -26,7 +26,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Show command
+ * Class for the "show" command. Command used to print all tracked times
  *
  * @author    Bernhard Wick <wick.b@hotmail.de>
  * @copyright 2016 Bernhard Wick
@@ -37,6 +37,7 @@ class Show extends Command
 {
 
     /**
+     * Configures the "show" command
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::configure()
@@ -85,6 +86,7 @@ class Show extends Command
     }
 
     /**
+     * Execute the command
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::execute()
