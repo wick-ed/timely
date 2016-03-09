@@ -24,6 +24,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Wicked\Timely\Storage\StorageFactory;
 
 /**
  * Class for the "show" command. Command used to print all tracked times
@@ -93,17 +94,20 @@ class Show extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // get the ticket
         $ticket = $input->getArgument('ticket');
+
+        // filter by ticket if given
+        $bookings = array();
+        $storage = StorageFactory::getStorage();
         if ($ticket) {
-            $text = 'Hello '.$name;
+            $bookings = $storage->retrieve($ticket);
         } else {
-            $text = 'Hello';
+            $bookings = $storage->retrieveAll();
         }
 
-        if ($input->getOption('yell')) {
-            $text = strtoupper($text);
-        }
+        // format for output
 
-        $output->writeln($text);
+        $output->write($text);
     }
 }

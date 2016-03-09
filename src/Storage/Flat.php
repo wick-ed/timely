@@ -101,10 +101,22 @@ class Flat
      *
      *
      *
-     * @return \Wicked\Timely\Entities\Booking
+     * @return \Wicked\Timely\Entities\Booking[]
      */
     public function retrieve($ticketId)
     {
+        // get the raw entries
+        $rawData = file_get_contents($path);
+        $rawEntries = explode(self::LINE_BREAK, $rawData);
+        // itarate them and generate the entities
+        $entries = array();
+        foreach ($rawEntries as $rawEntry) {
+            // get the potential entry and filter them by ticket ID
+            $entry = explode(self::SEPARATOR, $rawEntry);
+            if ($entry[1] === $ticketId) {
+                $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
+            }
+        }
 
     }
 
@@ -115,6 +127,7 @@ class Flat
      */
     public function retrieveAll()
     {
-
+        $rawData = file_get_contents($path);
+        $rawEntries = explode(self::LINE_BREAK, $rawData);
     }
 }

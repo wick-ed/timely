@@ -79,13 +79,17 @@ class Booking
      * @param unknown $comment
      * @param unknown $ticketId
      */
-    public function __construct($comment, $ticketId = null)
+    public function __construct($comment, $ticketId = '', $time = null)
     {
         // get the arguments
         $this->ticketId = $ticketId;
         $this->comment = $comment;
 
-        // get the current date and time
-        $this->time = time();
+        // get the current date and time (if not given)
+        if (is_null($time)) {
+            $this->time = time();
+        } else {
+            $this->time = $time;
+        }
     }
 }
