@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\Storage\Flat
+ * \Wicked\Timely\Storage\File
  *
  * NOTICE OF LICENSE
  *
@@ -20,16 +20,17 @@
 namespace Wicked\Timely\Storage;
 
 use Wicked\Timely\Entities\Booking;
+use Wicked\Timely\Formatter\FormatterFactory;
 
 /**
- * Flat storage
+ * File storage
  *
  * @author    Bernhard Wick <wick.b@hotmail.de>
  * @copyright 2016 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class Flat
+class File
 {
 
     /**
@@ -82,15 +83,9 @@ class Flat
      */
     public function store(Booking $booking)
     {
-        $bookString = implode(
-            self::SEPARATOR,
-            array(
-                $booking->getTime(),
-                $booking->getTicketId(),
-                $booking->getComment()
-            )
-        ) . self::LINE_BREAK . '
-';
+        // get the formatter and convert to string
+        $formatter = FormatterFactory::getFormatter();
+        $bookString = $formatter->toString($booking);
 
         // write the new booking to the beginning of the file
         $path = $this->getLogFilePath();
@@ -106,18 +101,18 @@ class Flat
     public function retrieve($ticketId)
     {
         // get the raw entries
-        $rawData = file_get_contents($path);
+        $rawData = file_get_contents($this->getLogFilePath());
         $rawEntries = explode(self::LINE_BREAK, $rawData);
         // itarate them and generate the entities
         $entries = array();
         foreach ($rawEntries as $rawEntry) {
             // get the potential entry and filter them by ticket ID
             $entry = explode(self::SEPARATOR, $rawEntry);
-            if ($entry[1] === $ticketId) {
+            if (isset($entry[1]) && $entry[1] === $ticketId) {
                 $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
             }
         }
-
+        return $entries;
     }
 
     /**

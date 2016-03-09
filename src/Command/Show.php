@@ -25,6 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Wicked\Timely\Storage\StorageFactory;
+use Wicked\Timely\Formatter\FormatterFactory;
 
 /**
  * Class for the "show" command. Command used to print all tracked times
@@ -107,7 +108,13 @@ class Show extends Command
         }
 
         // format for output
+        $text = '';
+        $formatter = FormatterFactory::getFormatter();
+        foreach ($bookings as $booking) {
+            $text .= $formatter->toString($booking);
+        }
 
-        $output->write($text);
+        // write output
+        $output->write($text, true);
     }
 }

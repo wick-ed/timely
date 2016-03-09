@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\Storage\StorageFactory
+ * \Wicked\Timely\Formatter\FormatterFactory
  *
  * NOTICE OF LICENSE
  *
@@ -17,23 +17,49 @@
  * @link      https://github.com/wick-ed/timely
  */
 
-namespace Wicked\Timely\Storage;
+namespace Wicked\Timely\Formatter;
 
 /**
- * Storage factory
+ * Formatter factory
  *
  * @author    Bernhard Wick <wick.b@hotmail.de>
  * @copyright 2016 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class StorageFactory
+class FormatterFactory
 {
     /**
      *
+     * @var unknown
      */
-    public function getStorage()
+    const OUTPUT_CHANNEL = 'formatter.channel.output';
+
+    /**
+     *
+     * @var unknown
+     */
+    const STORAGE_CHANNEL = 'formatter.channel.storage';
+
+    /**
+     *
+     * @param unknown $channel
+     */
+    public function getFormatter($channel = null)
     {
-        return new File();
+        switch ($channel) {
+
+            case self::OUTPUT_CHANNEL:
+                return new Flat();
+                break;
+
+            case self::STORAGE_CHANNEL :
+                return new Flat();
+                break;
+
+            default:
+                return new Flat();
+                break;
+        }
     }
 }
