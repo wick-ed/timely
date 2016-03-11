@@ -22,7 +22,7 @@ Show tracked times
 ### Syntax
 
 ```
-timely show [-scf] [<TICKET>]
+timely show [-scf] [<TICKET/PATTERN>]
 ``
 
 ### Options
@@ -36,11 +36,6 @@ Sort by ticket
 -c
 ```
 List in chronologic order
-
-```
--p
-```
-Filter by pattern
 
 ```
 -f

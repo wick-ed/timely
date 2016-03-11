@@ -30,6 +30,8 @@ namespace Wicked\Timely\Entities;
 class Booking
 {
 
+    const DEFAULT_DATE_FORMAT = 'Y-m-d H:i';
+
     /**
      * Id of a potential ticket the booking is for
      *
@@ -82,14 +84,14 @@ class Booking
     public function __construct($comment, $ticketId = '', $time = null)
     {
         // get the arguments
-        $this->ticketId = $ticketId;
-        $this->comment = $comment;
+        $this->ticketId = trim($ticketId);
+        $this->comment = trim($comment);
 
         // get the current date and time (if not given)
         if (is_null($time)) {
-            $this->time = time();
+            $this->time = date(self::DEFAULT_DATE_FORMAT);
         } else {
-            $this->time = $time;
+            $this->time = trim($time);
         }
     }
 }

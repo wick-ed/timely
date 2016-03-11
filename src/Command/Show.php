@@ -108,11 +108,8 @@ class Show extends Command
         }
 
         // format for output
-        $text = '';
-        $formatter = FormatterFactory::getFormatter();
-        foreach ($bookings as $booking) {
-            $text .= $formatter->toString($booking);
-        }
+        $formatter = FormatterFactory::getFormatter(FormatterFactory::OUTPUT_CHANNEL);
+        $text = $formatter->toString($bookings);
 
         // write output
         $output->write($text, true);

@@ -98,17 +98,17 @@ class File
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($ticketId)
+    public function retrieve($pattern)
     {
         // get the raw entries
         $rawData = file_get_contents($this->getLogFilePath());
-        $rawEntries = explode(self::LINE_BREAK, $rawData);
+        $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
         // itarate them and generate the entities
         $entries = array();
         foreach ($rawEntries as $rawEntry) {
             // get the potential entry and filter them by ticket ID
-            $entry = explode(self::SEPARATOR, $rawEntry);
-            if (isset($entry[1]) && $entry[1] === $ticketId) {
+            $entry = explode(self::SEPARATOR, trim($rawEntry));
+            if (isset($entry[1]) && fnmatch($pattern, $entry[1])) {
                 $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
             }
         }
@@ -122,7 +122,16 @@ class File
      */
     public function retrieveAll()
     {
-        $rawData = file_get_contents($path);
-        $rawEntries = explode(self::LINE_BREAK, $rawData);
+        // get the raw entries
+        $rawData = file_get_contents($this->getLogFilePath());
+        $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
+        // itarate them and generate the entities
+        $entries = array();
+        foreach ($rawEntries as $rawEntry) {
+            // get the potential entry and filter them by ticket ID
+            $entry = explode(self::SEPARATOR, trim($rawEntry));
+            $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
+        }
+        return $entries;
     }
 }

@@ -50,17 +50,27 @@ class Flat
      *
      * @param Booking $booking
      */
-    public function toString(Booking $booking)
+    public function toString($bookings)
     {
-        return implode(
-            self::SEPARATOR,
-            array(
-                $booking->getTime(),
-                $booking->getTicketId(),
-                $booking->getComment()
-            )
-        ) . self::LINE_BREAK . '
+        // if we do not get an array make one
+        if (!is_array($bookings)) {
+            $bookings = array($bookings);
+        }
+
+        // iterate the array and create the formatted string
+        $result = '';
+        foreach ($bookings as $booking) {
+            $result .= implode(
+                self::SEPARATOR,
+                array(
+                    $booking->getTime(),
+                    $booking->getTicketId(),
+                    $booking->getComment()
+                )
+            ) . self::LINE_BREAK . '
 ';
+        }
+        return $result;
     }
 
     /**

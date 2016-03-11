@@ -50,7 +50,7 @@ class FormatterFactory
         switch ($channel) {
 
             case self::OUTPUT_CHANNEL:
-                return new Flat();
+                return new Grouped();
                 break;
 
             case self::STORAGE_CHANNEL :
