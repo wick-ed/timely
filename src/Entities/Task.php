@@ -101,14 +101,17 @@ class Task
         $this->endBooking = $endBooking;
         $this->intermediateBookings = $intermediateBookings;
         // calculate the duration
-        $this->duration = calculateDruation();
+        $this->duration = $this->calculateDruation($startBooking, $endBooking, $intermediateBookings);
     }
 
     /**
      *
      */
-    protected function calculateDruation()
+    protected function calculateDruation($startBooking, $endBooking, $intermediateBookings)
     {
-
+        // get the raw time without breaks and such
+        $rawTime = strtotime($endBooking->getTime()) - strtotime($startBooking->getTime());
+        // substract the breaks
+        return $rawTime;
     }
 }

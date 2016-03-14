@@ -20,6 +20,9 @@
 namespace Wicked\Timely\Formatter;
 
 use Wicked\Timely\Entities\Booking;
+use Wicked\Timely\Entities\Pause;
+use Wicked\Timely\Entities\TaskFactory;
+use Wicked\Timely\Helper\Date;
 
 /**
  * Flat storage
@@ -50,21 +53,29 @@ class Grouped
             $bookings = array($bookings);
         }
 
-        // iterate the bookings and sort them by ticket
+        // create the tasks from the bookings
+        $tasks = TaskFactory::getTasksFromBookings($bookings);
+
+        // iterate the tasks and sort them by ticket
         $groups = array();
-        foreach ($bookings as $booking) {
+        foreach ($tasks as $task) {
             // prepare for collection
-            if (!isset($groups[$booking->getTicketId()])) {
-                $groups[$booking->getTicketId()] = array();
+            $ticketId = $task->getStartBooking()->getTicketId();
+            // filter out breaks
+            if ($ticketId === Pause::PAUSE_TAG_START || $ticketId === Pause::PAUSE_TAG_END) {
+                continue;
             }
-            // collect the bookings
-            $groups[$booking->getTicketId()][] = $booking;
+            if (!isset($groups[$ticketId])) {
+                $groups[$ticketId] = array();
+            }
+            // collect the grouped tasks
+            $groups[$ticketId][] = $task;
         }
 
         // generate the group string
         $result = '';
-        foreach ($groups as $ticketId => $tickets) {
-            $result .= $this->renderGroup($ticketId, $tickets);
+        foreach ($groups as $ticketId => $groupedTasks) {
+            $result .= $this->renderGroup($ticketId, $groupedTasks);
         }
         // return the string
         return $result;
@@ -85,27 +96,30 @@ class Grouped
      *
      * @return string
      */
-    protected function renderGroup($ticketId, array $bookings)
+    protected function renderGroup($ticketId, array $tasks)
     {
         // collect some vital numbers
         $total = 0;
         $ticketList = '';
-        foreach ($bookings as $booking) {
+        foreach ($tasks as $task) {
             // create the entry string
+            $booking = $task->getStartBooking();
             $ticketList .= implode(
                 self::SEPARATOR,
                 array(
                     $booking->getTime(),
                     $booking->getTicketId(),
+                    Date::secondsToUnits($task->getDuration()),
                     $booking->getComment()
                 )
                 ) . '
     ';
+            $total += $task->getDuration();
         }
 
         // we also need the first and last element of the array
-        $lastBooking = reset($bookings);
-        $firstBooking = end($bookings);
+        $lastBooking = reset($tasks)->getStartBooking();
+        $firstBooking = end($tasks)->getStartBooking();
 
         // begin the string generation
         $result = $ticketId . '     ' .  $firstBooking->getTime() . ' -> ' . $lastBooking->getTime() . '
@@ -114,7 +128,7 @@ class Grouped
 
         // print the total and end with another linebreak without indention to break groups apart
         $result .= '-------------------------------------------------
-    ' . $total . '
+    ' . Date::secondsToUnits($total) . '
 
 ';
         // return the string

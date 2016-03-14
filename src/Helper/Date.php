@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\Entities\Pause
+ * \Wicked\Timely\Helper\Date
  *
  * NOTICE OF LICENSE
  *
@@ -17,42 +17,52 @@
  * @link      https://github.com/wick-ed/timely
  */
 
-namespace Wicked\Timely\Entities;
+namespace Wicked\Timely\Helper;
 
 /**
- * Pause entity
+ * Date helper
  *
  * @author    Bernhard Wick <wick.b@hotmail.de>
  * @copyright 2016 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class Pause extends Booking
+class Date
 {
 
     /**
      *
      * @var unknown
      */
-    const PAUSE_TAG_START = '_PAUSE_START_';
+    const DAY_IN_SECONDS = 86400;
 
     /**
      *
      * @var unknown
      */
-    const PAUSE_TAG_END = '_PAUSE_END_';
+    const HOUR_IN_SECONDS = 3600;
 
     /**
      *
-     * @param string $comment
-     * @param boolean $resuming
+     * @var unknown
      */
-    public function __construct($comment = '', $resuming = false)
+    const MINUTE_IN_SECONDS = 60;
+
+    /**
+     *
+     * @param unknown $timespan
+     */
+    public function secondsToUnits($timespan)
     {
-        if ($resuming === true) {
-            parent::__construct($comment, self::PAUSE_TAG_END);
-        } else {
-            parent::__construct($comment, self::PAUSE_TAG_START);
-        }
+        // get the days
+        $days = floor($timespan / self::DAY_IN_SECONDS);
+        $timespan -= $days * self::DAY_IN_SECONDS;
+        // get the hours
+        $hours = floor($timespan / self::HOUR_IN_SECONDS);
+        $timespan -= $hours * self::HOUR_IN_SECONDS;
+        // get the minutes
+        $minutes = round($timespan / self::MINUTE_IN_SECONDS);
+        // return a formatted string
+        return sprintf('%sd %sh %sm', $days, $hours, $minutes);
     }
 }
