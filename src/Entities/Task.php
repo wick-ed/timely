@@ -54,6 +54,12 @@ class Task
      *
      * @var unknown
      */
+    protected $intermediateTasks;
+
+    /**
+     *
+     * @var unknown
+     */
     protected $duration;
 
     /**
@@ -100,18 +106,29 @@ class Task
         $this->startBooking = $startBooking;
         $this->endBooking = $endBooking;
         $this->intermediateBookings = $intermediateBookings;
+        // we will need the tasks which are built up by the intermediate bookings
+        $this->intermediateTasks = TaskFactory::getTasksFromBookings(array_merge($intermediateBookings, array($endBooking)), false, true);
         // calculate the duration
-        $this->duration = $this->calculateDruation($startBooking, $endBooking, $intermediateBookings);
+        $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateTasks);
     }
 
     /**
      *
+     * @param unknown $startBooking
+     * @param unknown $endBooking
+     * @param unknown $intermediateTasks
+     *
+     * @return integer
      */
-    protected function calculateDruation($startBooking, $endBooking, $intermediateBookings)
+    protected function calculateDuration($startBooking, $endBooking, $intermediateTasks)
     {
         // get the raw time without breaks and such
         $rawTime = strtotime($endBooking->getTime()) - strtotime($startBooking->getTime());
         // substract the breaks
+        foreach ($intermediateTasks as $intermediateTask) {
+            $rawTime -= $intermediateTask->getDuration();
+        }
+        // return what we got
         return $rawTime;
     }
 }

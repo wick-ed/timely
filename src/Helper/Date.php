@@ -63,6 +63,9 @@ class Date
         // get the minutes
         $minutes = round($timespan / self::MINUTE_IN_SECONDS);
         // return a formatted string
-        return sprintf('%sd %sh %sm', $days, $hours, $minutes);
+        $result = $days > 0 ? sprintf('%sd ', $days) : '';
+        $result .= $hours > 0 ? sprintf('%sh ', $hours) : '';
+        $result .= $minutes > 0 ? sprintf('%sm', $minutes) : '';
+        return $result;
     }
 }

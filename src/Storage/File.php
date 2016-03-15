@@ -130,7 +130,8 @@ class File
         foreach ($rawEntries as $rawEntry) {
             // get the potential entry and filter them by ticket ID
             $entry = explode(self::SEPARATOR, trim($rawEntry));
-            $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
+            $comment = isset($entry[2]) ? $entry[2] : '';
+            $entries[] = new Booking($comment, $entry[1], $entry[0]);
         }
         return $entries;
     }
