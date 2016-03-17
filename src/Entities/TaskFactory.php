@@ -38,7 +38,7 @@ class TaskFactory
      *
      * @return \Wicked\Timely\Entities\Task[]
      */
-    public function getTasksFromBookings(array $bookings, $squashMultiple = false, $includePauses = false)
+    public static function getTasksFromBookings(array $bookings, $squashMultiple = false, $includePauses = false)
     {
         // iterate the bookings and collect by task
         $tasks = array();

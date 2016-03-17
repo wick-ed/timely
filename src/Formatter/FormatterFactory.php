@@ -45,7 +45,7 @@ class FormatterFactory
      *
      * @param unknown $channel
      */
-    public function getFormatter($channel = null)
+    public static function getFormatter($channel = null)
     {
         switch ($channel) {
 

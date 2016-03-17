@@ -32,7 +32,7 @@ class StorageFactory
     /**
      *
      */
-    public function getStorage()
+    public static function getStorage()
     {
         return new File();
     }
