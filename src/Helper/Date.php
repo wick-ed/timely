@@ -52,7 +52,7 @@ class Date
      *
      * @param unknown $timespan
      */
-    public function secondsToUnits($timespan)
+    public static function secondsToUnits($timespan)
     {
         // get the days
         $days = floor($timespan / self::DAY_IN_SECONDS);

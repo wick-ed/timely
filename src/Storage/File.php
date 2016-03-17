@@ -74,7 +74,12 @@ class File
      */
     public function __construct()
     {
-        $this->logFilePath = realpath(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . self::DATA_NAME);
+        // calculate the default file path
+        $this->logFilePath = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . self::DATA_NAME;
+        // check if the file exists, if not create it
+        if (!is_file($this->logFilePath)) {
+            touch($this->logFilePath);
+        }
     }
 
     /**
