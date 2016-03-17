@@ -1,4 +1,14 @@
+# Usage
 
+As an alias like:
+```bash
+alias timely="php /<DIR_TO_TIMELY>/timely/bin/timely $*"
+```
+
+And use like:
+```bash
+timely track FOO-127 bar
+```
 
 # Commands
 
