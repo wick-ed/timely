@@ -56,7 +56,7 @@ class Track extends Command
             )
         ->addArgument(
             'comment',
-            InputArgument::REQUIRED,
+            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
             'Comment for tracking entry'
             );
     }
@@ -71,7 +71,7 @@ class Track extends Command
     {
         // get the input arguments
         $ticket = $input->getArgument('ticket');
-        $comment = $input->getArgument('comment');
+        $comment = implode(' ', $input->getArgument('comment'));
 
         $result = 'Tracking successful';
         try {
