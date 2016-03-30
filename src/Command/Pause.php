@@ -51,7 +51,7 @@ class Pause extends Command
         ->setDescription('Pause current tracking')
         ->addArgument(
             'comment',
-            InputArgument::OPTIONAL,
+            InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
             'Comment why currently tracked task is paused'
             )
             ->addOption(
@@ -72,7 +72,7 @@ class Pause extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // get the comment (if any)
-        $comment = $input->getArgument('comment');
+        $comment = implode(' ', $input->getArgument('comment'));
 
         // check if we are resuming or pausing initially
         $resuming = false;

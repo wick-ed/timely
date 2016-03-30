@@ -99,12 +99,26 @@ class File
 
     /**
      *
-     *
+     * @param unknown $pattern
+     * @param unknown $toDate
+     * @param unknown $fromDate
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($pattern)
+    public function retrieve($pattern = null, $toDate = null, $fromDate = null)
     {
+        // test if we got a pattern, if not match against all
+        if (is_null($pattern)) {
+            $pattern = '*';
+        }
+        // test if we got some dates to filter by
+        if (is_null($toDate)) {
+            $toDate = 9999999999;
+        }
+        if (is_null($fromDate)) {
+            $fromDate = 0;
+        }
+
         // get the raw entries
         $rawData = file_get_contents($this->getLogFilePath());
         $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
@@ -113,30 +127,10 @@ class File
         foreach ($rawEntries as $rawEntry) {
             // get the potential entry and filter them by ticket ID
             $entry = explode(self::SEPARATOR, trim($rawEntry));
-            if (isset($entry[1]) && fnmatch($pattern, $entry[1])) {
+            $timestamp = strtotime($entry[0]);
+            if (isset($entry[1]) && fnmatch($pattern, $entry[1]) && $timestamp > $fromDate && $timestamp < $toDate) {
                 $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
             }
-        }
-        return $entries;
-    }
-
-    /**
-     *
-     *
-     * @return \Wicked\Timely\Entities\Booking[]
-     */
-    public function retrieveAll()
-    {
-        // get the raw entries
-        $rawData = file_get_contents($this->getLogFilePath());
-        $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
-        // itarate them and generate the entities
-        $entries = array();
-        foreach ($rawEntries as $rawEntry) {
-            // get the potential entry and filter them by ticket ID
-            $entry = explode(self::SEPARATOR, trim($rawEntry));
-            $comment = isset($entry[2]) ? $entry[2] : '';
-            $entries[] = new Booking($comment, $entry[1], $entry[0]);
         }
         return $entries;
     }

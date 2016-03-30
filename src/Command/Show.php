@@ -38,6 +38,8 @@ use Wicked\Timely\Formatter\FormatterFactory;
 class Show extends Command
 {
 
+    const FILTER_KEYWORD_TODAY = 'today';
+
     /**
      * Configures the "show" command
      *
@@ -76,13 +78,13 @@ class Show extends Command
                 'f',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'If set, the task will yell in uppercase letters'
+                'Show from a certain date on'
                 )
             ->addOption(
                 't',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'If set, the task will yell in uppercase letters'
+                'Show up to a certain date'
                 )
                 ;
     }
@@ -98,14 +100,27 @@ class Show extends Command
         // get the ticket
         $ticket = $input->getArgument('ticket');
 
-        // filter by ticket if given
-        $bookings = array();
-        $storage = StorageFactory::getStorage();
-        if ($ticket) {
-            $bookings = $storage->retrieve($ticket);
-        } else {
-            $bookings = $storage->retrieveAll();
+        // check for options first
+        $toDate = null;
+        $fromDate = null;
+        if ($input->getOption('t')) {
+            // test for valid format
+            $tmpDate = strtotime($input->getOption('t'));
+            if ($tmpDate !== false) {
+                $toDate = $tmpDate;
+            }
         }
+        if ($input->getOption('f')) {
+        // test for valid format
+            $tmpDate = strtotime($input->getOption('f'));
+            if ($tmpDate !== false) {
+                $fromDate = $tmpDate;
+            }
+        }
+
+        // filter by ticket if given
+        $storage = StorageFactory::getStorage();
+        $bookings = $storage->retrieve($ticket, $toDate, $fromDate);
 
         // format for output
         $formatter = FormatterFactory::getFormatter(FormatterFactory::OUTPUT_CHANNEL);

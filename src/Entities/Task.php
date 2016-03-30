@@ -109,7 +109,7 @@ class Task
         // we will need the tasks which are built up by the intermediate bookings
         $this->intermediateTasks = TaskFactory::getTasksFromBookings(array_merge($intermediateBookings, array($endBooking)), false, true);
         // calculate the duration
-        $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateTasks);
+        $this->duration = $this->calculateDuration($startBooking, $endBooking, $this->intermediateTasks);
     }
 
     /**
