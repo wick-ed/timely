@@ -31,26 +31,30 @@ class Date
 {
 
     /**
+     * Constant for the number of seconds in a day
      *
-     * @var unknown
+     * @var integer DAY_IN_SECONDS
      */
     const DAY_IN_SECONDS = 86400;
 
     /**
+     * Constant for the number of seconds in an hour
      *
-     * @var unknown
+     * @var integer HOUR_IN_SECONDS
      */
     const HOUR_IN_SECONDS = 3600;
 
     /**
+     * Constant for the number of seconds in a minute
      *
-     * @var unknown
+     * @var integer MINUTE_IN_SECONDS
      */
     const MINUTE_IN_SECONDS = 60;
 
     /**
+     * Formats a timespan into a string of the format 0d 0h 0m
      *
-     * @param unknown $timespan
+     * @param integer $timespan
      */
     public static function secondsToUnits($timespan)
     {

@@ -29,7 +29,7 @@ use Wicked\Timely\Entities\Booking;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class Flat
+class Flat implements FormatterInterface
 {
 
     /**
@@ -47,8 +47,9 @@ class Flat
     const SEPARATOR = ' | ';
 
     /**
+     * Formats a booking into a string
      *
-     * @param Booking $booking
+     * @param \Wicked\Timely\Entities\Booking $booking
      */
     public function toString($bookings)
     {
@@ -71,14 +72,5 @@ class Flat
 ';
         }
         return $result;
-    }
-
-    /**
-     *
-     *
-     * @return \Wicked\Timely\Entities\Booking[]
-     */
-    public function toBooking($bookingString)
-    {
     }
 }

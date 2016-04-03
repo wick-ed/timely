@@ -31,39 +31,44 @@ class Task
 {
 
     /**
-     * Id of a potential ticket the booking is for
+     * First booking of this task
      *
-     * @var string|null $ticketId
+     * @var \Wicked\Timely\Entities\Booking $startBooking
      */
     protected $startBooking;
 
     /**
-     * Comment regarding the current booking
+     * Last booking of this task
      *
-     * @var string $comment
+     * @var \Wicked\Timely\Entities\Booking $endBooking
      */
     protected $endBooking;
 
     /**
+     * Bookings within this task
      *
-     * @var unknown
+     * @var \Wicked\Timely\Entities\Booking[] $intermediateBookings
      */
     protected $intermediateBookings;
 
     /**
+     * Intermediate tasks, done within this task instance
      *
-     * @var unknown
+     * @var \Wicked\Timely\Entities\Task[] $intermediateTasks
      */
     protected $intermediateTasks;
 
     /**
+     * The task's duration
      *
-     * @var unknown
+     * @var integer $duration
      */
     protected $duration;
 
     /**
+     * Getter for the first booking of the task instance
      *
+     * @return \Wicked\Timely\Entities\Booking
      */
     public function getStartBooking()
     {
@@ -71,7 +76,9 @@ class Task
     }
 
     /**
+     * Getter for the last booking of the task instance
      *
+     * @return \Wicked\Timely\Entities\Booking
      */
     public function getEndBooking()
     {
@@ -79,7 +86,9 @@ class Task
     }
 
     /**
+     * Getter for the intermediate bookings
      *
+     * @return \Wicked\Timely\Entities\Booking[]
      */
     public function getIntermediateBookings()
     {
@@ -87,7 +96,9 @@ class Task
     }
 
     /**
+     * Getter for the task duration
      *
+     * @return integer
      */
     public function getDuration()
     {
@@ -95,10 +106,11 @@ class Task
     }
 
     /**
+     * Default constructor
      *
-     * @param unknown $startBooking
-     * @param unknown $endBooking
-     * @param unknown $intermediateBookings
+     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
+     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
+     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
      */
     public function __construct($startBooking, $endBooking, $intermediateBookings)
     {
@@ -113,10 +125,11 @@ class Task
     }
 
     /**
+     * Calculates the duration of a task by given bookings
      *
-     * @param unknown $startBooking
-     * @param unknown $endBooking
-     * @param unknown $intermediateTasks
+     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
+     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
+     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
      *
      * @return integer
      */

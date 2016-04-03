@@ -32,7 +32,7 @@ use Wicked\Timely\Helper\Date;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class Grouped
+class Grouped implements FormatterInterface
 {
 
     /**
@@ -43,8 +43,9 @@ class Grouped
     const SEPARATOR = ' | ';
 
     /**
+     * Formats a booking into a string
      *
-     * @param Booking $booking
+     * @param \Wicked\Timely\Entities\Booking $booking
      */
     public function toString(array $bookings)
     {
@@ -82,17 +83,10 @@ class Grouped
     }
 
     /**
+     * Render a certain group of tasks
      *
-     * @param string $bookingString
-     */
-    public function toBooking($bookingString)
-    {
-    }
-
-    /**
-     *
-     * @param unknown $ticketId
-     * @param array $bookings
+     * @param string                         $ticketId Ticket id to render a group for
+     * @param \Wicked\Timely\Command\Track[] $tasks    Set of tasks to render a group for
      *
      * @return string
      */

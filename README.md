@@ -32,27 +32,16 @@ Show tracked times
 ### Syntax
 
 ```
-timely show [-scf] [<TICKET/PATTERN>]
+timely show [--ft] [<TICKET/PATTERN>]
 ``
 
 ### Options
 
-```
--s
-```
-Sort by ticket
+`--f=<DATE>`
 
-```
--c
-```
-List in chronologic order
-
-```
--f
-```
 Show from a certain date on
 
-```
--t
-```
-Show up to a certain date
+
+`--t=<DATE>`
+
+Shows a tracked tasks up to a certain date

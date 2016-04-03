@@ -30,6 +30,11 @@ namespace Wicked\Timely\Entities;
 class Booking
 {
 
+    /**
+     * Default date format
+     *
+     * @var string DEFAULT_DATE_FORMAT
+     */
     const DEFAULT_DATE_FORMAT = 'Y-m-d H:i';
 
     /**
@@ -47,13 +52,16 @@ class Booking
     protected $comment;
 
     /**
+     * Time this booking was made
      *
-     * @var unknown
+     * @var string $time
      */
     protected $time;
 
     /**
+     * Getter for the booking time
      *
+     * @return string
      */
     public function getTime()
     {
@@ -61,7 +69,9 @@ class Booking
     }
 
     /**
+     * Getter for the booked ticket id
      *
+     * @return string
      */
     public function getTicketId()
     {
@@ -69,7 +79,9 @@ class Booking
     }
 
     /**
+     * Getter for the booking comment
      *
+     * @return string
      */
     public function getComment()
     {
@@ -77,9 +89,11 @@ class Booking
     }
 
     /**
+     * Default constructor
      *
-     * @param unknown $comment
-     * @param unknown $ticketId
+     * @param string      $comment  Comment for the booking
+     * @param string      $ticketId Optional ticket ID
+     * @param null|string $time     Time of this booking
      */
     public function __construct($comment, $ticketId = '', $time = null)
     {

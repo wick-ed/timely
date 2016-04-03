@@ -31,21 +31,24 @@ class Pause extends Booking
 {
 
     /**
+     * Constant for the pause start tag
      *
-     * @var unknown
+     * @var string PAUSE_TAG_START
      */
-    const PAUSE_TAG_START = '_PAUSE_START_';
+    const PAUSE_TAG_START = '--ps--';
 
     /**
+     * Constant for the pause end tag
      *
-     * @var unknown
+     * @var string PAUSE_TAG_END
      */
-    const PAUSE_TAG_END = '_PAUSE_END_';
+    const PAUSE_TAG_END = '--pe--';
 
     /**
+     * Default constructor
      *
-     * @param string $comment
-     * @param boolean $resuming
+     * @param string  $comment  Comment for the pause
+     * @param boolean $resuming Whether or not the pause has ended
      */
     public function __construct($comment = '', $resuming = false)
     {

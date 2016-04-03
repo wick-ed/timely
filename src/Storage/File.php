@@ -30,7 +30,7 @@ use Wicked\Timely\Formatter\FormatterFactory;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class File
+class File implements StorageFactory
 {
 
     /**
@@ -62,14 +62,6 @@ class File
     protected $logFilePath;
 
     /**
-     *
-     */
-    public function getLogFilePath()
-    {
-        return $this->logFilePath;
-    }
-
-    /**
      * Default constructor
      */
     public function __construct()
@@ -83,8 +75,19 @@ class File
     }
 
     /**
+     * Getter for the log file path
      *
-     * @param Booking $booking
+     * @return string
+     */
+    public function getLogFilePath()
+    {
+        return $this->logFilePath;
+    }
+
+    /**
+     * Stores a single booking
+     *
+     * @param \Wicked\Timely\Entities\Booking $booking The booking to store
      */
     public function store(Booking $booking)
     {
@@ -98,10 +101,12 @@ class File
     }
 
     /**
+     * Retrieves one or several bookings from the storage. Bookings can be filtered by pattern,
+     * date, etc.
      *
-     * @param unknown $pattern
-     * @param unknown $toDate
-     * @param unknown $fromDate
+     * @param null|string  $pattern  A pattern to filter ticket IDs for
+     * @param null|integer $toDate   Date up to which bookings will be returned
+     * @param null|integer $fromDate Date from which on bookings will be returned
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */

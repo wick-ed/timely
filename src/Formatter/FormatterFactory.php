@@ -29,21 +29,27 @@ namespace Wicked\Timely\Formatter;
  */
 class FormatterFactory
 {
+
     /**
+     * Constant for the output channel
      *
-     * @var unknown
+     * @var string OUTPUT_CHANNEL
      */
     const OUTPUT_CHANNEL = 'formatter.channel.output';
 
     /**
+     * Constant for the storage channel
      *
-     * @var unknown
+     * @var string STORAGE_CHANNEL
      */
     const STORAGE_CHANNEL = 'formatter.channel.storage';
 
     /**
+     * Getter for the right formatter
      *
-     * @param unknown $channel
+     * @param null|string $channel Channel to get a formatter for
+     *
+     * @return \Wicked\Timely\Formatter\FormatterInterface
      */
     public static function getFormatter($channel = null)
     {

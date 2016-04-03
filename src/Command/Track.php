@@ -39,7 +39,7 @@ class Track extends Command
 {
 
     /**
-     * Configures the "show" command
+     * Configures the "track" command
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::configure()

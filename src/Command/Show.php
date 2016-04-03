@@ -38,6 +38,11 @@ use Wicked\Timely\Formatter\FormatterFactory;
 class Show extends Command
 {
 
+    /**
+     * Constant for the "today" keyword
+     *
+     * @var string FILTER_KEYWORD_TODAY
+     */
     const FILTER_KEYWORD_TODAY = 'today';
 
     /**
@@ -56,24 +61,6 @@ class Show extends Command
             InputArgument::OPTIONAL,
             'Show tracked times for a certain ticket'
             )
-            ->addOption(
-                's',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the task will yell in uppercase letters'
-                )
-            ->addOption(
-                'c',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the task will yell in uppercase letters'
-                )
-            ->addOption(
-                'p',
-                null,
-                InputOption::VALUE_NONE,
-                'If set, the task will yell in uppercase letters'
-                )
             ->addOption(
                 'f',
                 null,

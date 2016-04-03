@@ -31,10 +31,11 @@ class TaskFactory
 {
 
     /**
+     * Generates tasks from a set of bookings
      *
-     * @param array $bookings
-     * @param boolean $squashMultiple
-     * @param boolean $includePauses
+     * @param array   $bookings       Set of bookings to generate tasks from
+     * @param boolean $squashMultiple Whether or not to squash several tasks which are based on the same ticket
+     * @param boolean $includePauses  Whether or not to include pause based tasks
      *
      * @return \Wicked\Timely\Entities\Task[]
      */
