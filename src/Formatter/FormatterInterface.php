@@ -29,13 +29,13 @@ use Wicked\Timely\Entities\Booking;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class FormatterInterface
+interface FormatterInterface
 {
 
     /**
      * Formats a booking into a string
      *
-     * @param \Wicked\Timely\Entities\Booking $booking
+     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings
      */
     public function toString($bookings);
 }
