@@ -45,9 +45,9 @@ class Grouped implements FormatterInterface
     /**
      * Formats a booking into a string
      *
-     * @param \Wicked\Timely\Entities\Booking $booking
+     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings
      */
-    public function toString(array $bookings)
+    public function toString($bookings)
     {
         // if we do not get an array make one
         if (!is_array($bookings)) {
