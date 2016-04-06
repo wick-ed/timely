@@ -30,7 +30,7 @@ use Wicked\Timely\Formatter\FormatterFactory;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class File implements StorageFactory
+class File implements StorageInterface
 {
 
     /**
