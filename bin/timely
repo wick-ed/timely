@@ -2,7 +2,15 @@
 <?php
 // timely
 
-require __DIR__.'/../vendor/autoload.php';
+// get current dir
+$dir = __DIR__;
+
+// check if script is symlinked and read link to define real dire
+if (is_link(__FILE__)) {
+    $dir = dirname(readlink(__FILE__));
+}
+
+require $dir . '/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use Wicked\Timely\Command\Track;
