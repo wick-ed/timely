@@ -59,7 +59,7 @@ class FormatterFactory
                 return new Grouped();
                 break;
 
-            case self::STORAGE_CHANNEL :
+            case self::STORAGE_CHANNEL:
                 return new Flat();
                 break;
 

@@ -41,6 +41,8 @@ class Pause extends Command
     /**
      * Configures the "pause" command
      *
+     * @return void
+     *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
@@ -53,18 +55,22 @@ class Pause extends Command
             'comment',
             InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
             'Comment why currently tracked task is paused'
-            )
+        )
             ->addOption(
                 'r',
                 null,
                 InputOption::VALUE_NONE,
                 'Will resume the task tracked before a pause has happened'
-                )
-                ;
+            );
     }
 
     /**
      * Execute the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
+     *
+     * @return void
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::execute()

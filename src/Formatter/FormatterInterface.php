@@ -35,7 +35,9 @@ interface FormatterInterface
     /**
      * Formats a booking into a string
      *
-     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings
+     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings The bookings to format
+     *
+     * @return string
      */
     public function toString($bookings);
 }

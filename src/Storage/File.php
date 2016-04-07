@@ -88,6 +88,8 @@ class File implements StorageInterface
      * Stores a single booking
      *
      * @param \Wicked\Timely\Entities\Booking $booking The booking to store
+     *
+     * @return void
      */
     public function store(Booking $booking)
     {

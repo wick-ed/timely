@@ -45,7 +45,9 @@ class Grouped implements FormatterInterface
     /**
      * Formats a booking into a string
      *
-     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings
+     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings The bookings to format
+     *
+     * @return string
      */
     public function toString($bookings)
     {
@@ -101,12 +103,12 @@ class Grouped implements FormatterInterface
             $ticketList .= implode(
                 self::SEPARATOR,
                 array(
-                    $booking->getTime(),
-                    $booking->getTicketId(),
-                    Date::secondsToUnits($task->getDuration()),
-                    $booking->getComment()
+                $booking->getTime(),
+                $booking->getTicketId(),
+                Date::secondsToUnits($task->getDuration()),
+                $booking->getComment()
                 )
-                ) . '
+            ) . '
     ';
             $total += $task->getDuration();
         }

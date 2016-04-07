@@ -48,6 +48,8 @@ class Show extends Command
     /**
      * Configures the "show" command
      *
+     * @return void
+     *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::configure()
      */
@@ -60,24 +62,28 @@ class Show extends Command
             'ticket',
             InputArgument::OPTIONAL,
             'Show tracked times for a certain ticket'
-            )
+        )
             ->addOption(
                 'f',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Show from a certain date on'
-                )
+            )
             ->addOption(
                 't',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Show up to a certain date'
-                )
-                ;
+            );
     }
 
     /**
      * Execute the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
+     *
+     * @return void
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::execute()

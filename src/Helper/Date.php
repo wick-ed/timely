@@ -54,7 +54,9 @@ class Date
     /**
      * Formats a timespan into a string of the format 0d 0h 0m
      *
-     * @param integer $timespan
+     * @param integer $timespan The timespan in seconds to format
+     *
+     * @return string
      */
     public static function secondsToUnits($timespan)
     {

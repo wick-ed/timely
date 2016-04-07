@@ -127,9 +127,9 @@ class Task
     /**
      * Calculates the duration of a task by given bookings
      *
-     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
-     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
-     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
+     * @param \Wicked\Timely\Entities\Booking   $startBooking      The first booking of the task
+     * @param \Wicked\Timely\Entities\Booking   $endBooking        The last booking of the task
+     * @param \Wicked\Timely\Entities\Booking[] $intermediateTasks Bookings within this task
      *
      * @return integer
      */
