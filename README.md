@@ -15,11 +15,8 @@ Simple PHP console tool to track your times
 ## Semantic versioning
 This library follows semantic versioning and its public API defines as follows:
 
-* The public API of [its related appserver.io PSR](https://github.com/appserver-io-psr/mop)
-* The public interface of the `\AppserverIo\Doppelgaenger\AutoLoader` class
-* The public interface of the `\AppserverIo\Doppelgaenger\Config` class
-* The syntax and amount of usable annotations (NOT including common annotations such as `@param` and `@return`)
-* The format of its configuration files
+* The commands it exposes over the command line interface
+* The format of its storage file
 
 ## Usage
 
