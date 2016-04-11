@@ -46,6 +46,13 @@ class Show extends Command
     const FILTER_KEYWORD_TODAY = 'today';
 
     /**
+     * Constant for the "yesterday" keyword
+     *
+     * @var string FILTER_KEYWORD_YESTERDAY
+     */
+    const FILTER_KEYWORD_YESTERDAY = 'yesterday';
+
+    /**
      * Configures the "show" command
      *
      * @return void
@@ -93,21 +100,36 @@ class Show extends Command
         // get the ticket
         $ticket = $input->getArgument('ticket');
 
-        // check for options first
+        // we might need framing dates
         $toDate = null;
         $fromDate = null;
-        if ($input->getOption('t')) {
-            // test for valid format
-            $tmpDate = strtotime($input->getOption('t'));
-            if ($tmpDate !== false) {
-                $toDate = $tmpDate;
+
+        // check if we got a keyword
+        if ($ticket === self::FILTER_KEYWORD_TODAY) {
+            // set the fromDate to today, and clear the ticket
+            $fromDate = strtotime(date('Y-m-d', time()));
+            $ticket = null;
+
+        } elseif ($ticket === self::FILTER_KEYWORD_YESTERDAY) {
+            // set the fromDate to yesterday and clear the ticket
+            $fromDate = strtotime(date('Y-m-d', time() - 24 * 60 * 60));
+            $ticket = null;
+
+        } else {
+            // check for options first
+            if ($input->getOption('t')) {
+                // test for valid format
+                $tmpDate = strtotime($input->getOption('t'));
+                if ($tmpDate !== false) {
+                    $toDate = $tmpDate;
+                }
             }
-        }
-        if ($input->getOption('f')) {
-        // test for valid format
-            $tmpDate = strtotime($input->getOption('f'));
-            if ($tmpDate !== false) {
-                $fromDate = $tmpDate;
+            if ($input->getOption('f')) {
+                // test for valid format
+                $tmpDate = strtotime($input->getOption('f'));
+                if ($tmpDate !== false) {
+                    $fromDate = $tmpDate;
+                }
             }
         }
 
