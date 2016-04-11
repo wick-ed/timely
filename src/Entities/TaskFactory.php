@@ -51,6 +51,8 @@ class TaskFactory
             // set the start booking
             if (is_null($startBooking) && (($booking->getTicketId() !== Pause::PAUSE_TAG_START && $booking->getTicketId() !== Pause::PAUSE_TAG_END) || $includePauses)) {
                 $startBooking = $booking;
+            } elseif (is_null($startBooking)) {
+                continue;
             } else {
                 // check if the task is finished here
                 if ($booking->getTicketId() !== $startBooking->getTicketId() &&

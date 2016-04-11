@@ -47,15 +47,20 @@ class Pause extends Booking
     /**
      * Default constructor
      *
-     * @param string  $comment  Comment for the pause
-     * @param boolean $resuming Whether or not the pause has ended
+     * @param string      $comment  Comment for the pause
+     * @param boolean     $resuming Whether or not the pause has ended
+     * @param null|string $time     Time of this booking
      */
-    public function __construct($comment = '', $resuming = false)
+    public function __construct($comment = '', $resuming = false, $time = null)
     {
+        // add the pause tags as special meta ticket IDs
+        $this->metaTicketIds[] = self::PAUSE_TAG_START;
+        $this->metaTicketIds[] = self::PAUSE_TAG_END;
+
         if ($resuming === true) {
-            parent::__construct($comment, self::PAUSE_TAG_END);
+            parent::__construct($comment, self::PAUSE_TAG_END, $time);
         } else {
-            parent::__construct($comment, self::PAUSE_TAG_START);
+            parent::__construct($comment, self::PAUSE_TAG_START, $time);
         }
     }
 }

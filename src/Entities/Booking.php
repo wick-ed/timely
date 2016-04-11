@@ -59,6 +59,13 @@ class Booking
     protected $time;
 
     /**
+     * A list of special ticket IDs which identify a meta ticket
+     *
+     * @var string[] $metaTicketIds
+     */
+    protected $metaTicketIds = array();
+
+    /**
      * Getter for the booking time
      *
      * @return string
@@ -86,6 +93,27 @@ class Booking
     public function getComment()
     {
         return $this->comment;
+    }
+
+    /**
+     * Whether or not this booking is a meta booking used
+     * to either create workflows or groupings of bookings and time durations
+     *
+     * @return boolean
+     */
+    public function isMetaBooking()
+    {
+        return in_array($this->getTicketId(), $this->getMetaTicketIds());
+    }
+
+    /**
+     * Getter for the meta ticket IDs
+     *
+     * @return string[]
+     */
+    public function getMetaTicketIds()
+    {
+        return $this->metaTicketIds;
     }
 
     /**

@@ -21,6 +21,7 @@ namespace Wicked\Timely\Storage;
 
 use Wicked\Timely\Entities\Booking;
 use Wicked\Timely\Formatter\FormatterFactory;
+use Wicked\Timely\Entities\BookingFactory;
 
 /**
  * File storage
@@ -133,10 +134,11 @@ class File implements StorageInterface
         $entries = array();
         foreach ($rawEntries as $rawEntry) {
             // get the potential entry and filter them by ticket ID
-            $entry = explode(self::SEPARATOR, trim($rawEntry));
+            $entry = explode(self::SEPARATOR, trim($rawEntry, ' |'));
             $timestamp = strtotime($entry[0]);
             if (isset($entry[1]) && fnmatch($pattern, $entry[1]) && $timestamp > $fromDate && $timestamp < $toDate) {
-                $entries[] = new Booking($entry[2], $entry[1], $entry[0]);
+                $comment = isset($entry[2]) ? $entry[2] : '';
+                $entries[] = $tmp = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
             }
         }
         return $entries;

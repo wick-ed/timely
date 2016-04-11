@@ -58,16 +58,16 @@ class Grouped implements FormatterInterface
 
         // create the tasks from the bookings
         $tasks = TaskFactory::getTasksFromBookings($bookings);
-
         // iterate the tasks and sort them by ticket
         $groups = array();
         foreach ($tasks as $task) {
-            // prepare for collection
-            $ticketId = $task->getStartBooking()->getTicketId();
-            // filter out breaks
-            if ($ticketId === Pause::PAUSE_TAG_START || $ticketId === Pause::PAUSE_TAG_END) {
+            // skip tasks which are used to describe meta bookings
+            if ($task->getStartBooking()->isMetaBooking()) {
                 continue;
             }
+            // prepare for collection
+            $ticketId = $task->getStartBooking()->getTicketId();
+            // prepare the group if needed
             if (!isset($groups[$ticketId])) {
                 $groups[$ticketId] = array();
             }
