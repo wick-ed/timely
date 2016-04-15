@@ -115,7 +115,7 @@ class Grouped implements FormatterInterface
 
         // we also need the first and last element of the array
         $lastBooking = reset($tasks)->getStartBooking();
-        $firstBooking = end($tasks)->getStartBooking();
+        $firstBooking = end($tasks)->getEndBooking();
 
         // begin the string generation
         $result = $ticketId . '     ' .  $firstBooking->getTime() . ' -> ' . $lastBooking->getTime() . '
