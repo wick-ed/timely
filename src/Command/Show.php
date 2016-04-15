@@ -111,8 +111,9 @@ class Show extends Command
             $ticket = null;
 
         } elseif ($ticket === self::FILTER_KEYWORD_YESTERDAY) {
-            // set the fromDate to yesterday and clear the ticket
+            // set the fromDate to yesterday, the toDate to today and clear the ticket
             $fromDate = strtotime(date('Y-m-d', time() - 24 * 60 * 60));
+            $toDate = strtotime(date('Y-m-d', time()));
             $ticket = null;
 
         } else {
