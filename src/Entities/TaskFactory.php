@@ -49,14 +49,14 @@ class TaskFactory
         for ($i = $bookingsCount; $i >= 0; $i --) {
             $booking = $bookings[$i];
             // set the start booking
-            if (is_null($startBooking) && (($booking->getTicketId() !== Pause::PAUSE_TAG_START && $booking->getTicketId() !== Pause::PAUSE_TAG_END) || $includePauses)) {
+            if (is_null($startBooking) && (!$booking instanceof Pause || $includePauses) && !$booking instanceof Clipping) {
                 $startBooking = $booking;
             } elseif (is_null($startBooking)) {
                 continue;
             } else {
                 // check if the task is finished here
                 if ($booking->getTicketId() !== $startBooking->getTicketId() &&
-                    (($booking->getTicketId() !== Pause::PAUSE_TAG_START && $booking->getTicketId() !== Pause::PAUSE_TAG_END) || $includePauses)
+                    (!$booking instanceof Pause || $includePauses) && $booking->getTicketId() !== Clipping::CLIPPING_TAG_FRONT
                     ) {
                     // create a new task entity and collect it
                     $tasks[] = new Task($startBooking, $booking, $intermediateBookings);

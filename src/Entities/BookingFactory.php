@@ -43,6 +43,14 @@ class BookingFactory
     {
         switch ($ticketId) {
 
+            case Clipping::CLIPPING_TAG_FRONT:
+                return new Clipping(true, $time);
+                break;
+
+            case Clipping::CLIPPING_TAG_REAR:
+                return new Clipping(false, $time);
+                break;
+
             case Pause::PAUSE_TAG_START:
                 return new Pause($comment, false, $time);
                 break;
@@ -55,5 +63,20 @@ class BookingFactory
                 return new Booking($comment, $ticketId, $time);
                 break;
         }
+    }
+
+    /**
+     * Returns all known meta booking ticket IDs
+     *
+     * @return array
+     */
+    public static function getAllMetaTicketIds()
+    {
+        return array(
+            Clipping::CLIPPING_TAG_FRONT => Clipping::CLIPPING_TAG_FRONT,
+            Clipping::CLIPPING_TAG_REAR => Clipping::CLIPPING_TAG_REAR,
+            Pause::PAUSE_TAG_START => Pause::PAUSE_TAG_START,
+            Pause::PAUSE_TAG_END => Pause::PAUSE_TAG_END
+        );
     }
 }

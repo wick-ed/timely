@@ -118,26 +118,35 @@ class Task
         $this->startBooking = $startBooking;
         $this->endBooking = $endBooking;
         $this->intermediateBookings = $intermediateBookings;
-        // we will need the tasks which are built up by the intermediate bookings
-        $this->intermediateTasks = TaskFactory::getTasksFromBookings(array_merge($intermediateBookings, array($endBooking)), false, true);
         // calculate the duration
-        $this->duration = $this->calculateDuration($startBooking, $endBooking, $this->intermediateTasks);
+        $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateBookings);
     }
 
     /**
      * Calculates the duration of a task by given bookings
      *
-     * @param \Wicked\Timely\Entities\Booking   $startBooking      The first booking of the task
-     * @param \Wicked\Timely\Entities\Booking   $endBooking        The last booking of the task
-     * @param \Wicked\Timely\Entities\Booking[] $intermediateTasks Bookings within this task
+     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
+     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
+     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
      *
      * @return integer
      */
-    protected function calculateDuration($startBooking, $endBooking, $intermediateTasks)
+    protected function calculateDuration($startBooking, $endBooking, array $intermediateBookings)
     {
+        // get any potential clippings and include them as task borders
+        foreach ($intermediateBookings as $intermediateBooking) {
+            if ($intermediateBooking->getTicketId() === Clipping::CLIPPING_TAG_FRONT) {
+                $startBooking = $intermediateBooking;
+
+            } elseif ($intermediateBooking->getTicketId() === Clipping::CLIPPING_TAG_REAR) {
+                $endBooking = $intermediateBooking;
+            }
+        }
+
         // get the raw time without breaks and such
         $rawTime = strtotime($endBooking->getTime()) - strtotime($startBooking->getTime());
-        // substract the breaks
+        // subtract the breaks
+        $intermediateTasks = TaskFactory::getTasksFromBookings(array_merge($intermediateBookings, array($endBooking)), false, true);
         foreach ($intermediateTasks as $intermediateTask) {
             $rawTime -= $intermediateTask->getDuration();
         }

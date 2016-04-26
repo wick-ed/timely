@@ -20,6 +20,7 @@
 namespace Wicked\Timely\Storage;
 
 use Wicked\Timely\Entities\Booking;
+use Wicked\Timely\Entities\Clipping;
 use Wicked\Timely\Formatter\FormatterFactory;
 use Wicked\Timely\Entities\BookingFactory;
 
@@ -113,7 +114,7 @@ class File implements StorageInterface
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($pattern = null, $toDate = null, $fromDate = null)
+    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $dontClip = false)
     {
         // test if we got a pattern, if not match against all
         if (is_null($pattern)) {
@@ -130,17 +131,51 @@ class File implements StorageInterface
         // get the raw entries
         $rawData = file_get_contents($this->getLogFilePath());
         $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
-        // itarate them and generate the entities
+
         $entries = array();
-        foreach ($rawEntries as $rawEntry) {
+
+        // if clipping is not omitted we will add the rear clipping to our collection
+        if (!$dontClip) {
+            $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_REAR);
+        }
+
+        // iterate them and generate the entities
+        $bookingKey = null;
+        foreach ($rawEntries as $key => $rawEntry) {
             // get the potential entry and filter them by ticket ID
             $entry = explode(self::SEPARATOR, trim($rawEntry, ' |'));
             $timestamp = strtotime($entry[0]);
-            if (isset($entry[1]) && fnmatch($pattern, $entry[1]) && $timestamp > $fromDate && $timestamp < $toDate) {
+            if (
+                isset($entry[1]) &&
+                (fnmatch($pattern, $entry[1]) || isset(BookingFactory::getAllMetaTicketIds()[$entry[1]])) &&
+                $timestamp > $fromDate && $timestamp < $toDate
+            ) {
+                // collect the actual booking
                 $comment = isset($entry[2]) ? $entry[2] : '';
-                $entries[] = $tmp = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $entries[] = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+
+                // collect keys we found something for, for later re-use
+                $bookingKey = $key;
             }
         }
+
+        // clip the front, but only if we filter by from date
+        if (!$dontClip && $fromDate !== 0) {
+            $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_FRONT, $fromDate);
+
+            // move some bookings into the past to get the startbooking of a potential task we might need
+            for ($i = $bookingKey - 1; $i >= 0; $i--) {
+                $entry = explode(self::SEPARATOR, trim($rawEntries[$i], ' |'));
+                $comment = isset($entry[2]) ? $entry[2] : '';
+                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $entries[] = $booking;
+                // break after the first non-meta booking
+                if ($booking->isMetaBooking()) {
+                    break;
+                }
+            }
+        }
+
         return $entries;
     }
 }

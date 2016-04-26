@@ -43,6 +43,13 @@ class Grouped implements FormatterInterface
     const SEPARATOR = ' | ';
 
     /**
+     * The total duration of all tasks grouped together
+     *
+     * @var integer $totalDuration
+     */
+    protected $totalDuration;
+
+    /**
      * Formats a booking into a string
      *
      * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings The bookings to format
@@ -55,9 +62,9 @@ class Grouped implements FormatterInterface
         if (!is_array($bookings)) {
             $bookings = array($bookings);
         }
-
+        error_log(var_export($bookings, true));
         // create the tasks from the bookings
-        $tasks = TaskFactory::getTasksFromBookings($bookings);
+        $tasks = TaskFactory::getTasksFromBookings($bookings);error_log(var_export($tasks, true));
         // iterate the tasks and sort them by ticket
         $groups = array();
         foreach ($tasks as $task) {
@@ -80,6 +87,13 @@ class Grouped implements FormatterInterface
         foreach ($groups as $ticketId => $groupedTasks) {
             $result .= $this->renderGroup($ticketId, $groupedTasks);
         }
+
+        // print the total amount of time spent
+        $result .= '
+====================================================
+Total: ' . Date::secondsToUnits($this->totalDuration) . '
+====================================================';
+
         // return the string
         return $result;
     }
@@ -110,12 +124,12 @@ class Grouped implements FormatterInterface
                 )
             ) . '
     ';
-            $total += $task->getDuration();
+            $this->totalDuration += $total += $task->getDuration();
         }
 
         // we also need the first and last element of the array
-        $lastBooking = reset($tasks)->getStartBooking();
-        $firstBooking = end($tasks)->getEndBooking();
+        $firstBooking= reset($tasks)->getStartBooking();
+        $lastBooking = end($tasks)->getEndBooking();
 
         // begin the string generation
         $result = $ticketId . '     ' .  $firstBooking->getTime() . ' -> ' . $lastBooking->getTime() . '
