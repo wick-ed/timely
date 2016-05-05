@@ -53,6 +53,13 @@ class Show extends Command
     const FILTER_KEYWORD_YESTERDAY = 'yesterday';
 
     /**
+     * Constant for the "current" keyword
+     *
+     * @var string FILTER_KEYWORD_CURRENT
+     */
+    const FILTER_KEYWORD_CURRENT = 'current';
+
+    /**
      * Configures the "show" command
      *
      * @return void
@@ -134,9 +141,18 @@ class Show extends Command
             }
         }
 
+        // check for an amount limiting keyword
+        $limit = null;
+        if ($ticket === self::FILTER_KEYWORD_CURRENT) {
+            // set the limit to 1, and clear the ticket
+            $limit = 1;
+            $ticket = null;
+        }
+
         // filter by ticket if given
+        /** @var \Wicked\Timely\Storage\StorageFactory $storage */
         $storage = StorageFactory::getStorage();
-        $bookings = $storage->retrieve($ticket, $toDate, $fromDate);
+        $bookings = $storage->retrieve($ticket, $toDate, $fromDate, $limit);
 
         // format for output
         $formatter = FormatterFactory::getFormatter(FormatterFactory::OUTPUT_CHANNEL);

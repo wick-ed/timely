@@ -55,8 +55,9 @@ interface StorageInterface
      * @param null|string  $pattern  A pattern to filter ticket IDs for
      * @param null|integer $toDate   Date up to which bookings will be returned
      * @param null|integer $fromDate Date from which on bookings will be returned
+     * @param null|integer $limit    Number of non-meta bookings the retrieval is limited to
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($pattern = null, $toDate = null, $fromDate = null);
+    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $limit = null);
 }

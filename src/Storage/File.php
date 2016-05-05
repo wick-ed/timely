@@ -111,10 +111,11 @@ class File implements StorageInterface
      * @param null|string  $pattern  A pattern to filter ticket IDs for
      * @param null|integer $toDate   Date up to which bookings will be returned
      * @param null|integer $fromDate Date from which on bookings will be returned
+     * @param null|integer $limit    Number of non-meta bookings the retrieval is limited to
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $dontClip = false)
+    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $limit = null, $dontClip = false)
     {
         // test if we got a pattern, if not match against all
         if (is_null($pattern)) {
@@ -141,6 +142,7 @@ class File implements StorageInterface
 
         // iterate them and generate the entities
         $bookingKey = null;
+        $bookingCount = 0;
         foreach ($rawEntries as $key => $rawEntry) {
             // get the potential entry and filter them by ticket ID
             $entry = explode(self::SEPARATOR, trim($rawEntry, ' |'));
@@ -152,10 +154,21 @@ class File implements StorageInterface
             ) {
                 // collect the actual booking
                 $comment = isset($entry[2]) ? $entry[2] : '';
-                $entries[] = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $entries[] = $booking;
+
+                // increase the booking counter
+                if (!$booking->isMetaBooking()) {
+                    $bookingCount ++;
+                }
 
                 // collect keys we found something for, for later re-use
                 $bookingKey = $key;
+
+                // break if we got as much bookings as our limit is
+                if (!is_null($limit) && $limit <= $bookingCount) {
+                    break;
+                }
             }
         }
 
