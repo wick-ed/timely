@@ -60,6 +60,20 @@ class Show extends Command
     const FILTER_KEYWORD_CURRENT = 'current';
 
     /**
+     * Constant for the "to" option
+     *
+     * @var string OPTION_TO
+     */
+    const OPTION_TO = 'to';
+
+    /**
+     * Constant for the "from" option
+     *
+     * @var string OPTION_FROM
+     */
+    const OPTION_FROM = 'from';
+
+    /**
      * Configures the "show" command
      *
      * @return void
@@ -78,13 +92,13 @@ class Show extends Command
             'Show tracked times for a certain ticket'
         )
             ->addOption(
-                'f',
+                self::OPTION_FROM,
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Show from a certain date on'
             )
             ->addOption(
-                't',
+                self::OPTION_TO,
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Show up to a certain date'
@@ -125,16 +139,16 @@ class Show extends Command
 
         } else {
             // check for options first
-            if ($input->getOption('t')) {
+            if ($input->getOption(self::OPTION_TO)) {
                 // test for valid format
-                $tmpDate = strtotime($input->getOption('t'));
+                $tmpDate = strtotime($input->getOption(self::OPTION_TO));
                 if ($tmpDate !== false) {
                     $toDate = $tmpDate;
                 }
             }
-            if ($input->getOption('f')) {
+            if ($input->getOption(self::OPTION_FROM)) {
                 // test for valid format
-                $tmpDate = strtotime($input->getOption('f'));
+                $tmpDate = strtotime($input->getOption(self::OPTION_FROM));
                 if ($tmpDate !== false) {
                     $fromDate = $tmpDate;
                 }

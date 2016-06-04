@@ -39,6 +39,13 @@ class Pause extends Command
 {
 
     /**
+     * Constant for the "resume" option
+     *
+     * @var string OPTION_RESUME
+     */
+    const OPTION_RESUME = 'resume';
+
+    /**
      * Configures the "pause" command
      *
      * @return void
@@ -57,7 +64,7 @@ class Pause extends Command
             'Comment why currently tracked task is paused'
         )
             ->addOption(
-                'r',
+                self::OPTION_RESUME,
                 null,
                 InputOption::VALUE_NONE,
                 'Will resume the task tracked before a pause has happened'
@@ -83,7 +90,7 @@ class Pause extends Command
         // check if we are resuming or pausing initially
         $resuming = false;
         $result = 'Pausing current tracking';
-        if ($input->getOption('r')) {
+        if ($input->getOption(self::OPTION_RESUME)) {
             $resuming = true;
             $result = 'Resuming recent tracking';
         }
@@ -96,7 +103,7 @@ class Pause extends Command
             $storage = StorageFactory::getStorage();
             $storage->store($pause);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = $e->getMessage();
         }
 
