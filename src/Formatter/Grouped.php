@@ -62,9 +62,9 @@ class Grouped implements FormatterInterface
         if (!is_array($bookings)) {
             $bookings = array($bookings);
         }
-        error_log(var_export($bookings, true));
+
         // create the tasks from the bookings
-        $tasks = TaskFactory::getTasksFromBookings($bookings);error_log(var_export($tasks, true));
+        $tasks = TaskFactory::getTasksFromBookings($bookings);
         // iterate the tasks and sort them by ticket
         $groups = array();
         foreach ($tasks as $task) {

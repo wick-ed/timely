@@ -19,7 +19,3 @@ script:
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
-
-notifications:
-  email: info@appserver.io
-  hipchat: 95d47a72c5372d4a0fef20048c3200@Appserver

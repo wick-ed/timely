@@ -49,7 +49,7 @@ class TaskFactory
         for ($i = $bookingsCount; $i >= 0; $i --) {
             $booking = $bookings[$i];
             // set the start booking
-            if (is_null($startBooking) && (!$booking instanceof Pause || $includePauses) && !$booking instanceof Clipping) {
+            if (is_null($startBooking) && (!$booking instanceof Pause || ($includePauses && $booking->getTicketId() !== Pause::PAUSE_TAG_END)) && !$booking instanceof Clipping) {
                 $startBooking = $booking;
             } elseif (is_null($startBooking)) {
                 continue;
@@ -61,7 +61,7 @@ class TaskFactory
                     // create a new task entity and collect it
                     $tasks[] = new Task($startBooking, $booking, $intermediateBookings);
                     // reset the tmp vars
-                    $startBooking = $booking;
+                    $startBooking = $booking->getTicketId() !== Pause::PAUSE_TAG_END ? $booking : null;
                     $intermediateBookings = array();
 
                 } else {

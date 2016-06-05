@@ -35,7 +35,7 @@ class Booking
      *
      * @var string DEFAULT_DATE_FORMAT
      */
-    const DEFAULT_DATE_FORMAT = 'Y-m-d H:i';
+    const DEFAULT_DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * Id of a potential ticket the booking is for
@@ -64,6 +64,16 @@ class Booking
      * @var string[] $metaTicketIds
      */
     protected $metaTicketIds = array();
+
+    /**
+     * Getter for the default date format
+     *
+     * @return string
+     */
+    public function getDefaultDateFormat()
+    {
+        return self::DEFAULT_DATE_FORMAT;
+    }
 
     /**
      * Getter for the booking time
@@ -119,9 +129,9 @@ class Booking
     /**
      * Default constructor
      *
-     * @param string      $comment  Comment for the booking
-     * @param string      $ticketId Optional ticket ID
-     * @param null|string $time     Time of this booking
+     * @param string              $comment  Comment for the booking
+     * @param string              $ticketId [optional] Optional ticket ID. Defaults to an empty string
+     * @param null|string|integer $time     [optional] Time of this booking. Defaults to NULL
      */
     public function __construct($comment, $ticketId = '', $time = null)
     {
@@ -130,8 +140,8 @@ class Booking
         $this->comment = trim($comment);
 
         // get the current date and time (if not given)
-        if (is_null($time)) {
-            $this->time = date(self::DEFAULT_DATE_FORMAT);
+        if (is_null($time) || is_integer($time)) {
+            $this->time = date(self::DEFAULT_DATE_FORMAT, $time);
         } else {
             $this->time = trim($time);
         }

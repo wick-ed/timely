@@ -146,7 +146,7 @@ class Task
         // get the raw time without breaks and such
         $rawTime = strtotime($endBooking->getTime()) - strtotime($startBooking->getTime());
         // subtract the breaks
-        $intermediateTasks = TaskFactory::getTasksFromBookings(array_merge($intermediateBookings, array($endBooking)), false, true);
+        $intermediateTasks = TaskFactory::getTasksFromBookings(array_merge(array($endBooking), $intermediateBookings), false, true);
         foreach ($intermediateTasks as $intermediateTask) {
             $rawTime -= $intermediateTask->getDuration();
         }
