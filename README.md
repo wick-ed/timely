@@ -55,7 +55,8 @@ Using **track** one can track the start of work on a certain ticket or issue. Th
 
 #### EXAMPLES
 
-```shell
+Start tracking your work on ticket `SOMEPROJECT-42` leaving a comment
+```
 timely track SOMEPROJECT-42 Starting to work on issue 42
 ```
 
@@ -67,7 +68,7 @@ timely track SOMEPROJECT-42 Starting to work on issue 42
 
 #### SYNOPSIS
 
-timely **show** \[yesterday|today|current\] \[-ft\] \[ticket-id\]
+timely **show** \[yesterday|today|current\] \[--tofrom\] \[ticket-id\]
 
 #### DESCRIPTION
 
@@ -75,29 +76,29 @@ The **show** command is used to show all, or only a certain sub-portion, of trac
 
 | Command      | Parameter  | Description                                                           |
 | -------------| -----------| ----------------------------------------------------------------------|
-| `-t|--to`    | Date       | A date up to which tasks should be shown. Format should be Y-m-d      |
-| `-f|--from`  | Date       | A date from which on tasks should be shown. Format should be Y-m-d    |
+| `--to`       | Date       | A date up to which tasks should be shown. Format should be Y-m-d      |
+| `--from`     | Date       | A date from which on tasks should be shown. Format should be Y-m-d    |
 
 #### EXAMPLES
 
 Show all tracked tasks related to the ticket with the ID `SOMEPROJECT-42`:
-```shell
+```
 timely show SOMEPROJECT-42
 ```
 
 Show all tracked tasks filtered by a pattern
-```shell
+```
 timely show SOMEPROJECT*
 ```
 
 Show all tasks which where tracked yesterday:
-```shell
+```
 timely show yesterday
 ```
 
 Show all tracked tasks from 24. January 2016 to 31. January 2016:
-```shell
-timely show -f 2016-01-24 -t 2016-01-31
+```
+timely show --from 2016-01-24 --to 2016-01-31
 ```
 
 ## pause
@@ -108,24 +109,24 @@ timely show -f 2016-01-24 -t 2016-01-31
 
 #### SYNOPSIS
 
-timely **pause** \[-r|comment\]
+timely **pause** \[--resume|comment\]
 
 #### DESCRIPTION
 
 Allows to pause a currently tracked task. Will pause time tracking until explicitly resumed, again with the **pause** command.
 
-| Command       | Description                                 |
-| --------------| --------------------------------------------|
-| `-r|--resume` | Resumes a previously paused task            |
+| Command    | Description                                 |
+| -----------| --------------------------------------------|
+| `--resume` | Resumes a previously paused task            |
 
 #### EXAMPLES
 
 Pause a currently tracked task:
-```shell
+```
 timely pause Going for lunch
 ```
 
 Resume a previously paused task
-```shell
-timely pause -r
+```
+timely pause --resume
 ```
