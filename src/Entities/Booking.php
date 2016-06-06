@@ -140,7 +140,9 @@ class Booking
         $this->comment = trim($comment);
 
         // get the current date and time (if not given)
-        if (is_null($time) || is_integer($time)) {
+        if (is_null($time)) {
+            $this->time = date(self::DEFAULT_DATE_FORMAT);
+        } elseif (is_integer($time)) {
             $this->time = date(self::DEFAULT_DATE_FORMAT, $time);
         } else {
             $this->time = trim($time);
