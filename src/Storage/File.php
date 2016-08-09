@@ -105,6 +105,16 @@ class File implements StorageInterface
     }
 
     /**
+     * Get the content of the files storage
+     *
+     * @return string
+     */
+    protected function getStorageContent()
+    {
+        return file_get_contents($this->getLogFilePath());
+    }
+
+    /**
      * Retrieves one or several bookings from the storage. Bookings can be filtered by pattern,
      * date, etc.
      *
@@ -131,7 +141,7 @@ class File implements StorageInterface
         }
 
         // get the raw entries
-        $rawData = file_get_contents($this->getLogFilePath());
+        $rawData = $this->getStorageContent();
         $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
 
         $entries = array();
@@ -177,7 +187,7 @@ class File implements StorageInterface
             $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_FRONT, $fromDate);
 
             // move some bookings into the past to get the startbooking of a potential task we might need
-            for ($i = $bookingKey - 1; $i >= 0; $i--) {
+            for ($i = $bookingKey + 1; $i < count($rawEntries); $i++) {
                 $entry = explode(self::SEPARATOR, trim($rawEntries[$i], ' |'));
                 $comment = isset($entry[2]) ? $entry[2] : '';
                 $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);

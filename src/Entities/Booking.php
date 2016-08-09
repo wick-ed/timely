@@ -148,4 +148,24 @@ class Booking
             $this->time = trim($time);
         }
     }
+
+    /**
+     * Whether or not this booking can be the start of a task
+     *
+     * @return boolean
+     */
+    public function canStartTask()
+    {
+        return true;
+    }
+
+    /**
+     * Whether or not this booking can be the end of a task
+     *
+     * @return boolean
+     */
+    public function canEndTask()
+    {
+        return true;
+    }
 }

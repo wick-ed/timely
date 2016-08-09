@@ -81,7 +81,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         );
         $endBooking = new Booking(
             'test for a end booking',
-            'TEST-1',
+            'TEST-2',
             date(Booking::DEFAULT_DATE_FORMAT, $endTime)
         );
 
@@ -105,7 +105,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         );
         $endBooking = new Booking(
             'test for an end booking',
-            'TEST-1',
+            'TEST-2',
             date(Booking::DEFAULT_DATE_FORMAT, 1465128998)
         );
 
@@ -133,7 +133,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         );
         $endBooking = new Booking(
             'test for an end booking',
-            'TEST-1',
+            'TEST-2',
             date(Booking::DEFAULT_DATE_FORMAT, 1465128998)
         );
 

@@ -49,19 +49,17 @@ class TaskFactory
         for ($i = $bookingsCount; $i >= 0; $i --) {
             $booking = $bookings[$i];
             // set the start booking
-            if (is_null($startBooking) && (!$booking instanceof Pause || ($includePauses && $booking->getTicketId() !== Pause::PAUSE_TAG_END)) && !$booking instanceof Clipping) {
+            if (is_null($startBooking) && $booking->canStartTask($includePauses)) {
                 $startBooking = $booking;
             } elseif (is_null($startBooking)) {
                 continue;
             } else {
                 // check if the task is finished here
-                if ($booking->getTicketId() !== $startBooking->getTicketId() &&
-                    (!$booking instanceof Pause || $includePauses) && $booking->getTicketId() !== Clipping::CLIPPING_TAG_FRONT
-                    ) {
+                if ($booking->canEndTask($includePauses)) {
                     // create a new task entity and collect it
-                    $tasks[] = new Task($startBooking, $booking, $intermediateBookings);
+                    $tasks[] = new Task($startBooking, $booking, array_reverse($intermediateBookings));
                     // reset the tmp vars
-                    $startBooking = $booking->getTicketId() !== Pause::PAUSE_TAG_END ? $booking : null;
+                    $startBooking = $booking->canStartTask($includePauses) ? $booking : null;
                     $intermediateBookings = array();
 
                 } else {
@@ -72,7 +70,7 @@ class TaskFactory
         }
         // if we are out of booking but have a pending task we will close it
         if (!is_null($startBooking) && $booking->getTicketId() !== $startBooking->getTicketId()) {
-            $tasks[] = new Task($startBooking, $booking, $intermediateBookings);
+            $tasks[] = new Task($startBooking, $booking, array_reverse($intermediateBookings));
         }
         // return what we got
         return $tasks;
