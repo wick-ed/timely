@@ -140,10 +140,32 @@ class Booking
         $this->comment = trim($comment);
 
         // get the current date and time (if not given)
-        if (is_null($time) || is_integer($time)) {
+        if (is_null($time)) {
+            $this->time = date(self::DEFAULT_DATE_FORMAT);
+        } elseif (is_integer($time)) {
             $this->time = date(self::DEFAULT_DATE_FORMAT, $time);
         } else {
             $this->time = trim($time);
         }
+    }
+
+    /**
+     * Whether or not this booking can be the start of a task
+     *
+     * @return boolean
+     */
+    public function canStartTask()
+    {
+        return true;
+    }
+
+    /**
+     * Whether or not this booking can be the end of a task
+     *
+     * @return boolean
+     */
+    public function canEndTask()
+    {
+        return true;
     }
 }

@@ -63,4 +63,24 @@ class Clipping extends Booking
             parent::__construct('', self::CLIPPING_TAG_REAR, $time);
         }
     }
+
+    /**
+     * Whether or not this booking can be the start of a task
+     *
+     * @return boolean
+     */
+    public function canStartTask()
+    {
+        return false;
+    }
+
+    /**
+     * Whether or not this booking can be the end of a task
+     *
+     * @return boolean
+     */
+    public function canEndTask()
+    {
+        return true;
+    }
 }

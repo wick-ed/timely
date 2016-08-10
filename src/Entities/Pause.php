@@ -63,4 +63,34 @@ class Pause extends Booking
             parent::__construct($comment, self::PAUSE_TAG_START, $time);
         }
     }
+
+    /**
+     * Whether or not this booking can be the start of a task
+     *
+     * @param boolean $includePause Whether or not pauses are included as task building bookings
+     *
+     * @return boolean
+     */
+    public function canStartTask($includePause = false)
+    {
+        if ($includePause) {
+            return $this->getTicketId() === self::PAUSE_TAG_START;
+        }
+        return false;
+    }
+
+    /**
+     * Whether or not this booking can be the end of a task
+     *
+     * @param boolean $includePause Whether or not pauses are included as task building bookings
+     *
+     * @return boolean
+     */
+    public function canEndTask($includePause = false)
+    {
+        if ($includePause) {
+            return $this->getTicketId() === self::PAUSE_TAG_END;
+        }
+        return false;
+    }
 }

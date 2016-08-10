@@ -68,7 +68,7 @@ timely track SOMEPROJECT-42 Starting to work on issue 42
 
 #### SYNOPSIS
 
-timely **show** \[yesterday|today|current\] \[--tofrom\] \[ticket-id\]
+timely **show** \[yesterday|today|current|recent\] \[--tofrom\] \[ticket-id\]
 
 #### DESCRIPTION
 
@@ -78,6 +78,15 @@ The **show** command is used to show all, or only a certain sub-portion, of trac
 | -------------| -----------| ----------------------------------------------------------------------|
 | `--to`       | Date       | A date up to which tasks should be shown. Format should be Y-m-d      |
 | `--from`     | Date       | A date from which on tasks should be shown. Format should be Y-m-d    |
+
+The **show** command also accepts several keywords used for specific filtering of its output.
+
+| Keyword     | Description                                        |
+| ------------| ---------------------------------------------------|
+| `yesterday` | Will show all of yesterday's tracked tasks         |
+| `today`     | Will show all of today's tracked tasks             |
+| `current`   | Shows the task you are currently working on        |
+| `recent`    | Shows the three most recent                        |
 
 #### EXAMPLES
 
