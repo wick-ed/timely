@@ -193,7 +193,7 @@ class File implements StorageInterface
                 $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
                 $entries[] = $booking;
                 // break after the first non-meta booking
-                if ($booking->isMetaBooking()) {
+                if (!$booking->isMetaBooking()) {
                     break;
                 }
             }

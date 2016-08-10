@@ -32,13 +32,10 @@ use Wicked\Timely\Entities\TaskFactory;
 class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     *
-     */
-    public function testFileStorageTaskGeneration()
+    public function fileStorageTaskGenerationProvider()
     {
-        // test content for the file storage
-        $testContent = '2016-07-26 18:38:16 | --ps-- | break;
+        return array(
+            array('2016-07-26 18:38:16 | --ps-- | break;
             2016-07-26 17:57:36 | TEST-10 | work;
             2016-07-26 17:57:35 | --pe-- | ;
             2016-07-26 17:34:52 | --ps-- | break;
@@ -56,8 +53,49 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
             2016-07-26 09:55:58 | TEST-2 | work;
             2016-07-26 09:53:48 | --pe-- | ;
             2016-07-25 17:43:43 | --ps-- | break;
-            2016-07-25 12:44:48 | TEST-1 | work;';
+            2016-07-25 12:44:48 | TEST-1 | work;',
+                10,
+                array(
+                    'TEST-1' => 18065, // 4h 58m 55s + 2m 10s
+                    'TEST-2' => 268, // 4m 28s
+                    'TEST-3' => 720, // 12m
+                    'TEST-4' => 2823, // 47m 3s
+                    'TEST-5' => 3956, // 1h 5m 56s
+                    'TEST-6' => 6963, // 4m 16s + 1h 51m 47s
+                    'TEST-7' => 2605, // 5m 2s + 38m 23s
+                    'TEST-8' => 8108, // 2h 15m 8s
+                    'TEST-9' => 67, // 1m 6s + 1s
+                    'TEST-10' => 2440 // 40m 40s
+                )),
+            array('2016-07-26 13:41:49 | --ps-- | break;
+            2016-07-26 10:38:17 | TEST-3 | work;
+            2016-07-26 10:18:45 | TEST-2 | work;
+            2016-07-26 08:37:56 | --pe-- | ;
+            2016-07-25 18:48:48 | --ps-- | break;
+            2016-07-25 16:13:53 | --pe-- | ;
+            2016-07-25 16:00:58 | --ps-- | break;
+            2016-07-25 14:20:57 | --pe-- | ;
+            2016-07-25 13:42:35 | --ps-- | break;
+            2016-07-25 10:18:04 | --pe-- | ;
+            2016-07-23 18:10:08 | --ps-- | break;
+            2016-07-23 13:00:02 | --pe-- | ;
+            2016-07-23 12:30:24 | --ps-- | break;
+            2016-07-23 10:29:55 | TEST-1 | work;',
+                3,
+                array(
+                    'TEST-1' => 59451, // 2h 29s + 5h 10m 6s + 3h 24m 31s + 1h 40m 1s + 2h 34m 55s + 1h 40m 49s
+                    'TEST-2' => 1172, // 19m 32s
+                    'TEST-3' => 11012 // 3h 3m 32s
+                )
+            )
+        );
+    }
 
+    /**
+     * @dataProvider fileStorageTaskGenerationProvider
+     */
+    public function testFileStorageTaskGeneration($testContent, $taskCount, $expectedDurations)
+    {
         // get us a mocked file storage with our content
         $classToMock = '\Wicked\Timely\Storage\File';
         /** @var \Wicked\Timely\Storage\File $mockFileStorage */
@@ -73,21 +111,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $tasks = TaskFactory::getTasksFromBookings($bookings);
 
         // first test: count the tasks
-        $this->assertCount(10, $tasks);
-
-        // the expected duration results
-        $expectedDurations = array(
-            'TEST-1' => 18065, // 4h 58m 55s + 2m 10s
-            'TEST-2' => 268, // 4m 28s
-            'TEST-3' => 720, // 12m
-            'TEST-4' => 2823, // 47m 3s
-            'TEST-5' => 3956, // 1h 5m 56s
-            'TEST-6' => 6963, // 4m 16s + 1h 51m 47s
-            'TEST-7' => 2605, // 5m 2s + 38m 23s
-            'TEST-8' => 8108, // 2h 15m 8s
-            'TEST-9' => 67, // 1m 6s + 1s
-            'TEST-10' => 2440 // 40m 40s
-        );
+        $this->assertCount($taskCount, $tasks);
 
         // the expected tasks
         $expectedTicketIds = array_keys($expectedDurations);
