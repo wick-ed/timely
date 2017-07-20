@@ -135,7 +135,7 @@ class Task
     {
         // get any potential clippings and include them as task borders
         foreach ($intermediateBookings as $intermediateBooking) {
-            if ($intermediateBooking->getTicketId() === Clipping::CLIPPING_TAG_FRONT) {
+            if ($intermediateBooking->canStartTask()) {
                 $startBooking = $intermediateBooking;
 
             } elseif ($intermediateBooking->getTicketId() === Clipping::CLIPPING_TAG_REAR) {
@@ -145,8 +145,9 @@ class Task
 
         // get the raw time without breaks and such
         $rawTime = strtotime($endBooking->getTime()) - strtotime($startBooking->getTime());
+
         // subtract the breaks
-        if (count($intermediateBookings) > 0) {
+        if (count($intermediateBookings) > 1) {
             $this->intermediateTasks = TaskFactory::getTasksFromBookings(array_merge(array($endBooking), $intermediateBookings), false, true);
             foreach ($this->intermediateTasks as $intermediateTask) {
                 $rawTime -= $intermediateTask->getDuration();
