@@ -145,7 +145,7 @@ class Booking
         } elseif (is_integer($time)) {
             $this->time = date(self::DEFAULT_DATE_FORMAT, $time);
         } else {
-            $this->time = trim($time);
+            $this->time = date(self::DEFAULT_DATE_FORMAT, strtotime($time));
         }
     }
 

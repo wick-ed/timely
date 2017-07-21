@@ -146,11 +146,6 @@ class File implements StorageInterface
 
         $entries = array();
 
-        // if clipping is not omitted we will add the rear clipping to our collection
-        if (!$dontClip) {
-            $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_REAR);
-        }
-
         // iterate them and generate the entities
         $bookingKey = null;
         $bookingCount = 0;
@@ -170,6 +165,22 @@ class File implements StorageInterface
                 // increase the booking counter
                 if (!$booking->isMetaBooking()) {
                     $bookingCount ++;
+                }
+
+                // if clipping is not omitted we will add the rear clipping to our collection.
+                // We do it here to make sure we get the correct day
+                if (count($entries) === 1 && !$dontClip) {
+                    // test if the last booking is from the today, if not we have to clip at the end of the last booked day
+                    $bookingTime = new \DateTime($booking->getTime());
+                    $now = new \DateTime();
+                    $interval = $bookingTime->diff($now);
+                    if ($interval->days === 0) {
+                        $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_REAR);
+                    } else {
+                        $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_REAR, date('Y-m-d', strtotime($booking->getTime()) + 24 * 60 * 60));
+                    }
+                    // reverse entries array to let it start with our clipping again
+                    $entries = array_reverse($entries);
                 }
 
                 // collect keys we found something for, for later re-use

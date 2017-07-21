@@ -29,11 +29,9 @@ use Wicked\Timely\Entities\TaskFactory;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class FunctionalTest extends \PHPUnit_Framework_TestCase
-{
+class FunctionalTest extends \PHPUnit_Framework_TestCase {
 
-    public function fileStorageTaskGenerationProvider()
-    {
+    public function fileStorageTaskGenerationProvider() {
         return array(
             array('2016-07-26 18:38:16 | --ps-- | break;
             2016-07-26 17:57:36 | TEST-10 | work;
@@ -92,19 +90,49 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     *
+     * @return type
+     */
+    public function fileStorageTaskClippingProvider() {
+        return array(
+            array(1469491200,
+                '2016-07-26 18:38:16 | --ps-- | break;
+            2016-07-26 17:57:36 | TEST-3 | work;
+            2016-07-26 13:55:58 | TEST-2 | work;
+            2016-07-26 09:53:48 | --pe-- | ;
+            2016-07-25 17:43:43 | --ps-- | break;
+            2016-07-25 12:44:48 | TEST-1 | work;',
+                array(
+                    'TEST-1' => 14530, // 4h 2m 10s
+                    'TEST-2' => 14498, // 4h 1m 38s
+                    'TEST-3' => 2440 // 40m 40s
+                )),
+            array(1469491200,
+                '2016-07-26 18:38:16 | --ps-- | break;
+            2016-07-26 13:55:58 | TEST-2 | work;
+            2016-07-26 09:53:48 | --pe-- | ;
+            2016-07-23 17:43:43 | --ps-- | break;
+            2016-07-23 12:44:48 | TEST-1 | work;',
+                array(
+                    'TEST-1' => 14530, // 4h 2m 10s
+                    'TEST-2' => 16938, // 4h 42m 18s
+                ))
+        );
+    }
+
+    /**
      * @dataProvider fileStorageTaskGenerationProvider
      */
-    public function testFileStorageTaskGeneration($testContent, $taskCount, $expectedDurations)
-    {
+    public function testFileStorageTaskGeneration($testContent, $taskCount, $expectedDurations) {
         // get us a mocked file storage with our content
         $classToMock = '\Wicked\Timely\Storage\File';
         /** @var \Wicked\Timely\Storage\File $mockFileStorage */
         $mockFileStorage = $this->getMockBuilder($classToMock)
-            ->setMethods(array('getStorageContent'))
-            ->getMock();
+                ->setMethods(array('getStorageContent'))
+                ->getMock();
         $mockFileStorage->expects($this->once())
-            ->method('getStorageContent')
-            ->will($this->returnValue($testContent));
+                ->method('getStorageContent')
+                ->will($this->returnValue($testContent));
 
         // generate the tasks
         $bookings = $mockFileStorage->retrieve();
@@ -126,5 +154,28 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @dataProvider fileStorageTaskClippingProvider
+     */
+    public function testTaskRetrievalWithLeadingClipping($clippingFromDate, $testContent, $expectedDurations) {
+        // get us a mocked file storage with our content
+        $classToMock = '\Wicked\Timely\Storage\File';
+        /** @var \Wicked\Timely\Storage\File $mockFileStorage */
+        $mockFileStorage = $this->getMockBuilder($classToMock)
+                ->setMethods(array('getStorageContent'))
+                ->getMock();
+        $mockFileStorage->expects($this->once())
+                ->method('getStorageContent')
+                ->will($this->returnValue($testContent));
+
+        // generate the tasks
+        $bookings = $mockFileStorage->retrieve($pattern = null, $toDate = null, $clippingFromDate);
+        $tasks = TaskFactory::getTasksFromBookings($bookings);
+
+        // iterate the tasks and check their duration
+        foreach ($tasks as $task) {
+            $this->assertEquals($expectedDurations[$task->getStartBooking()->getTicketId()], $task->getDuration());
+        }
+    }
 
 }
