@@ -71,7 +71,7 @@ class Clipping extends Booking
      */
     public function canStartTask()
     {
-        return false;
+        return $this->getTicketId() === self::CLIPPING_TAG_FRONT;
     }
 
     /**
@@ -81,6 +81,6 @@ class Clipping extends Booking
      */
     public function canEndTask()
     {
-        return true;
+        return $this->getTicketId() === self::CLIPPING_TAG_REAR;
     }
 }

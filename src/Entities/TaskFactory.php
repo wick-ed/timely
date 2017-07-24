@@ -56,6 +56,9 @@ class TaskFactory
             } else {
                 // check if the task is finished here
                 if ($booking->canEndTask($includePauses)) {
+                    if ($booking->getTicketId() === Clipping::CLIPPING_TAG_REAR) {
+                        $intermediateBookings[] = $booking;
+                    }
                     // create a new task entity and collect it
                     $tasks[] = new Task($startBooking, $booking, array_reverse($intermediateBookings));
                     // reset the tmp vars
