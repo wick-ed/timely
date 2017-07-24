@@ -84,18 +84,22 @@ class Pause extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // get the comment (if any)
-        $comment = implode(' ', $input->getArgument('comment'));
-
-        // check if we are resuming or pausing initially
-        $resuming = false;
-        $result = 'Pausing current tracking';
-        if ($input->getOption(self::OPTION_RESUME)) {
-            $resuming = true;
-            $result = 'Resuming recent tracking';
-        }
-
+        date_default_timezone_set('UTC');
         try {
+            // get the comment (if any)
+            $comment = implode(' ', $input->getArgument('comment'));
+
+            // check if we are resuming or pausing initially
+            $resuming = false;
+            $result = 'Pausing current tracking';
+            if ($input->getOption(self::OPTION_RESUME)) {
+                $this->assertConsistentResume();
+                $resuming = true;
+                $result = 'Resuming recent tracking';
+            } else {
+                $this->assertConsistentPause();
+            }
+
             // create a new pause instance
             $pause = new PauseEntity($comment, $resuming);
 
@@ -109,5 +113,43 @@ class Pause extends Command
 
         // write output
         $output->writeln($result);
+    }
+
+    /**
+     * Execute the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
+     *
+     * @return void
+     *
+     * {@inheritDoc}
+     * @see \Symfony\Component\Console\Command\Command::execute()
+     */
+    protected function assertConsistentResume () {
+        $storage = StorageFactory::getStorage();
+        $lastBooking = $storage->retrieveLast(true);
+        if ($lastBooking->getTicketId() !== PauseEntity::PAUSE_TAG_START) {
+            throw new \Exception('Cannot resume without an ongoing pause (forgot to start?)');
+        }
+    }
+
+    /**
+     * Execute the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
+     *
+     * @return void
+     *
+     * {@inheritDoc}
+     * @see \Symfony\Component\Console\Command\Command::execute()
+     */
+    protected function assertConsistentPause () {
+        $storage = StorageFactory::getStorage();
+        $lastBooking = $storage->retrieveLast(true);error_log(var_export($lastBooking, true));
+        if ($lastBooking instanceof PauseEntity) {
+            throw new \Exception('There already seems to be an ongoing pause');
+        }
     }
 }

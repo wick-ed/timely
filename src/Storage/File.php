@@ -115,18 +115,31 @@ class File implements StorageInterface
     }
 
     /**
+     * Retrieves retrieves the last booking from the storage
+     *
+     * @param boolean $includeMetaTickets Whether or not the retrieved booking can be a meta ticket
+     *
+     * @return \Wicked\Timely\Entities\Booking
+     */
+    public function retrieveLast($includeMetaTickets = false) {
+        $tmp = $this->retrieve(null, null, null, 1, true, $includeMetaTickets);
+        return array_pop($tmp);
+    }
+
+    /**
      * Retrieves one or several bookings from the storage. Bookings can be filtered by pattern,
      * date, etc.
      *
-     * @param null|string  $pattern  A pattern to filter ticket IDs for. Defaults to NULL
-     * @param null|integer $toDate   Date up to which bookings will be returned. Defaults to NULL
-     * @param null|integer $fromDate Date from which on bookings will be returned. Defaults to NULL
-     * @param null|integer $limit    Number of non-meta bookings the retrieval is limited to. Defaults to NULL
-     * @param boolean      $dontClip Whether or not the retrieved bookings should be clipped where appropriate. Defaults to FALSE
+     * @param null|string  $pattern   A pattern to filter ticket IDs for. Defaults to NULL
+     * @param null|integer $toDate    Date up to which bookings will be returned. Defaults to NULL
+     * @param null|integer $fromDate  Date from which on bookings will be returned. Defaults to NULL
+     * @param null|integer $limit     Number of non-meta bookings the retrieval is limited to. Defaults to NULL
+     * @param boolean      $dontClip  Whether or not the retrieved bookings should be clipped where appropriate. Defaults to FALSE
+     * @param boolean      $countMeta Whether or not meta tickets will be included in the counter which is used for our limit
      *
      * @return \Wicked\Timely\Entities\Booking[]
      */
-    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $limit = null, $dontClip = false)
+    public function retrieve($pattern = null, $toDate = null, $fromDate = null, $limit = null, $dontClip = false, $countMeta = false)
     {
         // test if we got a pattern, if not match against all
         if (is_null($pattern)) {
@@ -163,7 +176,7 @@ class File implements StorageInterface
                 $entries[] = $booking;
 
                 // increase the booking counter
-                if (!$booking->isMetaBooking()) {
+                if (!$booking->isMetaBooking() || $countMeta) {
                     $bookingCount ++;
                 }
 
