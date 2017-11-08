@@ -124,7 +124,7 @@ Total: ' . Date::secondsToUnits($this->totalDuration) . '
                 )
             ) . '
     ';
-            $this->totalDuration += $total += $task->getDuration();
+            $total += $task->getDuration();
         }
 
         // we also need the first and last element of the array
@@ -141,6 +141,8 @@ Total: ' . Date::secondsToUnits($this->totalDuration) . '
     ' . Date::secondsToUnits($total) . '
 
 ';
+        $this->totalDuration += $total;
+
         // return the string
         return $result;
     }
