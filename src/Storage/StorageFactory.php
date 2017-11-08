@@ -32,7 +32,7 @@ class StorageFactory
     /**
      * Factory method for the storage
      *
-     * @return \Wicked\Timely\Storage\StorageFactory
+     * @return \Wicked\Timely\Storage\StorageInterface
      */
     public static function getStorage()
     {

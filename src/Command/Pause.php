@@ -116,7 +116,7 @@ class Pause extends Command
     }
 
     /**
-     * Execute the command
+     * Assert that a given "resume" command makes sense
      *
      * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
@@ -135,7 +135,7 @@ class Pause extends Command
     }
 
     /**
-     * Execute the command
+     * Assert that a given "start" command makes sense
      *
      * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
@@ -147,8 +147,8 @@ class Pause extends Command
      */
     protected function assertConsistentPause () {
         $storage = StorageFactory::getStorage();
-        $lastBooking = $storage->retrieveLast(true);error_log(var_export($lastBooking, true));
-        if ($lastBooking instanceof PauseEntity) {
+        $lastBooking = $storage->retrieveLast(true);
+        if ($lastBooking->getTicketId() === PauseEntity::PAUSE_TAG_START) {
             throw new \Exception('There already seems to be an ongoing pause');
         }
     }
