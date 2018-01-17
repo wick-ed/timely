@@ -84,7 +84,6 @@ class Pause extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        date_default_timezone_set('UTC');
         try {
             // get the comment (if any)
             $comment = implode(' ', $input->getArgument('comment'));
