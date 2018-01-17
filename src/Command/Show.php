@@ -168,9 +168,14 @@ class Show extends Command
         $storage = StorageFactory::getStorage();
         $bookings = $storage->retrieve($ticket, $toDate, $fromDate, $limit);
 
-        // format for output
-        $formatter = FormatterFactory::getFormatter(FormatterFactory::OUTPUT_CHANNEL);
-        $text = $formatter->toString($bookings);
+        // prepare with empty message
+        $text = 'Sorry, could not find any matching bookings';
+
+        // format for output (if we got bookings)
+        if (!empty($bookings)) {
+            $formatter = FormatterFactory::getFormatter(FormatterFactory::OUTPUT_CHANNEL);
+            $text = $formatter->toString($bookings);
+        }
 
         // write output
         $output->write($text, true);

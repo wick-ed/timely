@@ -206,6 +206,11 @@ class File implements StorageInterface
             }
         }
 
+        // entries still empty? Then we can quit here
+        if (empty($entries)) {
+            return $entries;
+        }
+
         // clip the front, but only if we filter by from date
         if (!$dontClip && $fromDate !== 0) {
             $entries[] = BookingFactory::getBooking('', Clipping::CLIPPING_TAG_FRONT, $fromDate);
