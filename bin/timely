@@ -16,13 +16,15 @@ use Symfony\Component\Console\Application;
 use Wicked\Timely\Command\Track;
 use Wicked\Timely\Command\Show;
 use Wicked\Timely\Command\Pause;
+use Wicked\Timely\Command\Push;
 
 $application = new Application();
 $application->addCommands(
     array(
         new Track(),
         new Show(),
-        new Pause()
+        new Pause(),
+        new Push(),
     )
 );
 $application->run();

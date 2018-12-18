@@ -16,6 +16,7 @@ build.properties
 jmeter.log
 .DS_Store
 /.metadata
+.env
 
 
 node_modules/

@@ -31,6 +31,13 @@ class TaskFactory
 {
 
     /**
+     * The minimal time a a group of bookings must bridge to be considered a task
+     *
+     * @var int TIME_THRESHOLD
+     */
+    const TIME_THRESHOLD = 300;
+
+    /**
      * Generates tasks from a set of bookings
      *
      * @param array   $bookings       Set of bookings to generate tasks from
@@ -41,6 +48,8 @@ class TaskFactory
      */
     public static function getTasksFromBookings(array $bookings, $squashMultiple = false, $includePauses = false)
     {
+        // @TODO the task factory knows less than the task itself! Make the task a dumb DTO and empower the factory!
+
         // iterate the bookings and collect by task
         $tasks = array();
         $startBooking = null;
@@ -59,8 +68,11 @@ class TaskFactory
                     if ($booking->getTicketId() === Clipping::CLIPPING_TAG_REAR) {
                         $intermediateBookings[] = $booking;
                     }
-                    // create a new task entity and collect it
-                    $tasks[] = new Task($startBooking, $booking, array_reverse($intermediateBookings));
+                    // create a new task entity and collect it (if it lasts longer than our threshold)
+                    $tmpTask = new Task($startBooking, $booking, array_reverse($intermediateBookings));
+                    if ($tmpTask->getDuration() > static::TIME_THRESHOLD) {
+                        $tasks[] = $tmpTask;
+                    }
                     // reset the tmp vars
                     $startBooking = $booking->canStartTask($includePauses) ? $booking : null;
                     $intermediateBookings = array();

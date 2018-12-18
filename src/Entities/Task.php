@@ -66,6 +66,13 @@ class Task
     protected $duration;
 
     /**
+     * Whether or not the task is being clipped due to filtering
+     *
+     * @var boolean $isClipped
+     */
+    protected $isClipped = false;
+
+    /**
      * Getter for the first booking of the task instance
      *
      * @return \Wicked\Timely\Entities\Booking
@@ -73,6 +80,30 @@ class Task
     public function getStartBooking()
     {
         return $this->startBooking;
+    }
+
+    /**
+     * Getter for the first booking of the task instance
+     *
+     * @return string
+     */
+    public function getStartTime()
+    {
+        $firstIntermediate = reset($this->intermediateBookings);
+        if ($this->isClipped() && $firstIntermediate instanceof Pause && $firstIntermediate->isPauseEnd()) {
+            return $firstIntermediate->getTime();
+        }
+        return $this->getStartBooking()->getTime();
+    }
+
+    /**
+     * Getter for the first booking of the task instance
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->getStartBooking()->getComment();
     }
 
     /**
@@ -86,6 +117,16 @@ class Task
     }
 
     /**
+     * Getter for the first booking of the task instance
+     *
+     * @return string
+     */
+    public function getEndTime()
+    {
+        return $this->getEndBooking()->getTime();
+    }
+
+    /**
      * Getter for the intermediate bookings
      *
      * @return \Wicked\Timely\Entities\Booking[]
@@ -96,6 +137,16 @@ class Task
     }
 
     /**
+     * Getter for the task's ticket id
+     *
+     * @return string
+     */
+    public function getTicketId()
+    {
+        return $this->getStartBooking()->getTicketId();
+    }
+
+    /**
      * Getter for the task duration
      *
      * @return integer
@@ -103,6 +154,16 @@ class Task
     public function getDuration()
     {
         return $this->duration;
+    }
+
+    /**
+     * Getter for the task duration
+     *
+     * @return integer
+     */
+    protected function isClipped()
+    {
+        return $this->isClipped;
     }
 
     /**
@@ -120,6 +181,13 @@ class Task
         $this->intermediateBookings = $intermediateBookings;
         // calculate the duration
         $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateBookings);
+        // determine if we are being clipped
+        foreach ($intermediateBookings as $intermediateBooking) {
+            if ($intermediateBooking instanceof Clipping) {
+                $this->isClipped = true;
+                break;
+            }
+        }
     }
 
     /**

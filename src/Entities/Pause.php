@@ -71,6 +71,18 @@ class Pause extends Booking
      *
      * @return boolean
      */
+    public function isPauseEnd()
+    {
+        return $this->getTicketId() === static::PAUSE_TAG_END;
+    }
+
+    /**
+     * Whether or not this booking can be the start of a task
+     *
+     * @param boolean $includePause Whether or not pauses are included as task building bookings
+     *
+     * @return boolean
+     */
     public function canStartTask($includePause = false)
     {
         if ($includePause) {

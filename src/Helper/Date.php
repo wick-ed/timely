@@ -74,4 +74,36 @@ class Date
         $result .= $minutes > 0 ? sprintf('%sm', $minutes) : '';
         return $result;
     }
+
+    /**
+     * Formats a timespan into a string of the format 0d 0h 0m
+     *
+     * @param integer $timespan The timespan in seconds to format
+     * @param integer $interval The interval in seconds to round against
+     *
+     * @return string
+     */
+    public static function roundByInterval($timespan, $interval, $enforceMinimum = true)
+    {
+        // it could happen that we booked for less than our interval, so it would be rounded down to zero.
+        // By default we should prevent that
+        if ($enforceMinimum && $timespan < $interval) {
+            return $interval;
+        }
+
+        // only round if we aren't spot on
+        $overhead = $timespan % $interval;
+        if ($overhead === 0) {
+            return $timespan;
+        }
+
+        // round up or down based on our interval
+        if ($overhead >= ($interval / 2)) {
+            $timespan += ($interval - $overhead);
+        } else {
+            $timespan -= $overhead;
+        }
+
+        return $timespan;
+    }
 }

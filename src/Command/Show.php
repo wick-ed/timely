@@ -35,43 +35,8 @@ use Wicked\Timely\Formatter\FormatterFactory;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class Show extends Command
+class Show extends AbstractReadCommand
 {
-
-    /**
-     * Constant for the "today" keyword
-     *
-     * @var string FILTER_KEYWORD_TODAY
-     */
-    const FILTER_KEYWORD_TODAY = 'today';
-
-    /**
-     * Constant for the "yesterday" keyword
-     *
-     * @var string FILTER_KEYWORD_YESTERDAY
-     */
-    const FILTER_KEYWORD_YESTERDAY = 'yesterday';
-
-    /**
-     * Constant for the "current" keyword
-     *
-     * @var string FILTER_KEYWORD_CURRENT
-     */
-    const FILTER_KEYWORD_CURRENT = 'current';
-
-    /**
-     * Constant for the "to" option
-     *
-     * @var string OPTION_TO
-     */
-    const OPTION_TO = 'to';
-
-    /**
-     * Constant for the "from" option
-     *
-     * @var string OPTION_FROM
-     */
-    const OPTION_FROM = 'from';
 
     /**
      * Configures the "show" command
@@ -85,24 +50,10 @@ class Show extends Command
     {
         $this
         ->setName('show')
-        ->setDescription('Show tracked times')
-        ->addArgument(
-            'ticket',
-            InputArgument::OPTIONAL,
-            'Show tracked times for a certain ticket'
-        )
-            ->addOption(
-                self::OPTION_FROM,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Show from a certain date on'
-            )
-            ->addOption(
-                self::OPTION_TO,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Show up to a certain date'
-            );
+        ->setDescription('Show tracked times');
+
+        // add all the read options from the abstract super class
+        parent::configure();
     }
 
     /**
@@ -125,43 +76,11 @@ class Show extends Command
         $toDate = null;
         $fromDate = null;
 
-        // check if we got a keyword
-        if ($ticket === self::FILTER_KEYWORD_TODAY) {
-            // set the fromDate to today, and clear the ticket
-            $fromDate = strtotime(date('Y-m-d', time()));
-            $ticket = null;
-
-        } elseif ($ticket === self::FILTER_KEYWORD_YESTERDAY) {
-            // set the fromDate to yesterday, the toDate to today and clear the ticket
-            $fromDate = strtotime(date('Y-m-d', time() - 24 * 60 * 60));
-            $toDate = strtotime(date('Y-m-d', time()));
-            $ticket = null;
-
-        } else {
-            // check for options first
-            if ($input->getOption(self::OPTION_TO)) {
-                // test for valid format
-                $tmpDate = strtotime($input->getOption(self::OPTION_TO));
-                if ($tmpDate !== false) {
-                    $toDate = $tmpDate;
-                }
-            }
-            if ($input->getOption(self::OPTION_FROM)) {
-                // test for valid format
-                $tmpDate = strtotime($input->getOption(self::OPTION_FROM));
-                if ($tmpDate !== false) {
-                    $fromDate = $tmpDate;
-                }
-            }
-        }
-
-        // check for an amount limiting keyword
+        // there might be a limit
         $limit = null;
-        if ($ticket === self::FILTER_KEYWORD_CURRENT) {
-            // set the limit to 1, and clear the ticket
-            $limit = 1;
-            $ticket = null;
-        }
+
+        // prepare all the input options
+        $this->prepareInputParams($input, $ticket, $fromDate, $toDate, $limit);
 
         // filter by ticket if given
         /** @var \Wicked\Timely\Storage\StorageFactory $storage */

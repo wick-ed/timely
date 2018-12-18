@@ -19,8 +19,7 @@
 
 namespace Wicked\Timely\Formatter;
 
-use Wicked\Timely\Entities\Booking;
-use Wicked\Timely\Entities\Pause;
+use Wicked\Timely\Entities\Task;
 use Wicked\Timely\Entities\TaskFactory;
 use Wicked\Timely\Helper\Date;
 
@@ -67,13 +66,14 @@ class Grouped implements FormatterInterface
         $tasks = TaskFactory::getTasksFromBookings($bookings);
         // iterate the tasks and sort them by ticket
         $groups = array();
+        /** @var Task $task */
         foreach ($tasks as $task) {
             // skip tasks which are used to describe meta bookings
             if ($task->getStartBooking()->isMetaBooking()) {
                 continue;
             }
             // prepare for collection
-            $ticketId = $task->getStartBooking()->getTicketId();
+            $ticketId = $task->getTicketId();
             // prepare the group if needed
             if (!isset($groups[$ticketId])) {
                 $groups[$ticketId] = array();
@@ -91,7 +91,7 @@ class Grouped implements FormatterInterface
         // print the total amount of time spent
         $result .= '
 ====================================================
-Total: ' . Date::secondsToUnits($this->totalDuration) . '
+Total: ca. ' . Date::secondsToUnits(Date::roundByInterval($this->totalDuration, 900)) . '
 ====================================================';
 
         // return the string
@@ -117,10 +117,10 @@ Total: ' . Date::secondsToUnits($this->totalDuration) . '
             $ticketList .= implode(
                 self::SEPARATOR,
                 array(
-                $booking->getTime(),
-                $booking->getTicketId(),
-                Date::secondsToUnits($task->getDuration()),
-                $booking->getComment()
+                    $task->getStartTime(),
+                    $task->getTicketId(),
+                    Date::secondsToUnits($task->getDuration()),
+                    $task->getComment()
                 )
             ) . '
     ';
@@ -128,17 +128,17 @@ Total: ' . Date::secondsToUnits($this->totalDuration) . '
         }
 
         // we also need the first and last element of the array
-        $firstBooking= reset($tasks)->getStartBooking();
+        $startTime = reset($tasks)->getStartTime();
         $lastBooking = end($tasks)->getEndBooking();
 
         // begin the string generation
-        $result = $ticketId . '     ' .  $firstBooking->getTime() . ' -> ' . $lastBooking->getTime() . '
+        $result = $ticketId . '     ' .  $startTime . ' -> ' . $lastBooking->getTime() . '
 ====================================================
     ' . $ticketList;
 
         // print the total and end with another linebreak without indention to break groups apart
         $result .= '-------------------------------------------------
-    ' . Date::secondsToUnits($total) . '
+    ' . Date::secondsToUnits(Date::roundByInterval($total, 900)) . '
 
 ';
         $this->totalDuration += $total;
