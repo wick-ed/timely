@@ -65,6 +65,26 @@ class Booking
      */
     protected $metaTicketIds = array();
 
+
+    /** @var bool */
+    private $pushed;
+
+    /**
+     * @return bool
+     */
+    public function isPushed()
+    {
+        return $this->pushed;
+    }
+
+    /**
+     * @param bool $pushed
+     */
+    public function setPushed($pushed)
+    {
+        $this->pushed = $pushed;
+    }
+
     /**
      * Getter for the default date format
      *
@@ -132,12 +152,14 @@ class Booking
      * @param string              $comment  Comment for the booking
      * @param string              $ticketId [optional] Optional ticket ID. Defaults to an empty string
      * @param null|string|integer $time     [optional] Time of this booking. Defaults to NULL
+     * @param bool                $pushed   [optional] If pushed to jira worklog
      */
-    public function __construct($comment, $ticketId = '', $time = null)
+    public function __construct($comment, $ticketId = '', $time = null, $pushed=false)
     {
         // get the arguments
         $this->ticketId = trim($ticketId);
         $this->comment = trim($comment);
+        $this->pushed = $pushed;
 
         // get the current date and time (if not given)
         if (is_null($time)) {
