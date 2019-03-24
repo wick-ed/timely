@@ -2,10 +2,8 @@
 
 Simple PHP console tool to track your times
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/wick-ed/timely.svg?style=flat-square)](https://packagist.org/packages/wick-ed/timely) 
- [![Total Downloads](https://img.shields.io/packagist/dt/wick-ed/timely.svg?style=flat-square)](https://packagist.org/packages/wick-ed/timely)
- [![License](https://img.shields.io/packagist/l/wick-ed/timely.svg?style=flat-square)](https://packagist.org/packages/wick-ed/timely)
- [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/wick-ed/timely/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/wick-ed/timely/?branch=master)
+![Travis (.org) branch](https://img.shields.io/travis/wick-ed/timely/master.svg?style=flat-square)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/wick-ed/timely/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/wick-ed/timely/?branch=master)
  [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/wick-ed/timely/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/wick-ed/timely/?branch=master)
 
 ## Introduction

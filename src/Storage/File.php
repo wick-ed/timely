@@ -217,6 +217,9 @@ class File implements StorageInterface
 
             // move some bookings into the past to get the startbooking of a potential task we might need
             for ($i = $bookingKey + 1; $i < count($rawEntries); $i++) {
+                if (empty(trim($rawEntries[$i]))) {
+                    continue;
+                }
                 $entry = explode(self::SEPARATOR, trim($rawEntries[$i], ' |'));
                 $comment = isset($entry[2]) ? $entry[2] : '';
                 $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
