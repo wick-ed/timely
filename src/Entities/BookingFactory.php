@@ -36,10 +36,11 @@ class BookingFactory
      * @param string      $comment  Comment for the booking
      * @param string      $ticketId Optional ticket ID
      * @param null|string $time     Time of this booking
+     * @param bool        $pushed   Pushed to jira worklog
      *
      * @return \Wicked\Timely\Entities\Booking
      */
-    public static function getBooking($comment, $ticketId = '', $time = null)
+    public static function getBooking($comment, $ticketId = '', $time = null, $pushed=false)
     {
         switch ($ticketId) {
 
@@ -60,7 +61,7 @@ class BookingFactory
                 break;
 
             default:
-                return new Booking($comment, $ticketId, $time);
+                return new Booking($comment, $ticketId, $time, $pushed);
                 break;
         }
     }

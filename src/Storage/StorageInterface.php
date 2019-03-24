@@ -49,6 +49,15 @@ interface StorageInterface
     public function store(Booking $booking);
 
     /**
+     * Stores a single booking
+     *
+     * @param \Wicked\Timely\Entities\Booking $booking The booking to store
+     *
+     * @return void
+     */
+    public function storePush(Booking $booking);
+
+    /**
      * Retrieves retrieves the last booking from the storage
      *
      * @param boolean $includeMetaTickets Whether or not the retrieved booking can be a meta ticket

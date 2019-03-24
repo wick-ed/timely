@@ -68,10 +68,10 @@ class Flat implements FormatterInterface
                 array(
                     $booking->getTime(),
                     $booking->getTicketId(),
-                    $booking->getComment()
+                    $booking->getComment(),
+                    $booking->isPushed() ? 'jira '.date('Y-m-d H:i:s').'' : ''
                 )
-            ) . self::LINE_BREAK . '
-';
+            ) . self::LINE_BREAK . "\n";
         }
         return $result;
     }
