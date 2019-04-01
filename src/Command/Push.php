@@ -19,6 +19,7 @@
 
 namespace Wicked\Timely\Command;
 
+use JiraRestApi\Configuration\ConfigurationInterface;
 use Wicked\Timely\DotEnvConfiguration;
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\Issue\Worklog;
@@ -42,6 +43,8 @@ class Push extends AbstractReadCommand
 {
 
     const COMMAND_NAME = 'push';
+    const KEYCHAIN_NAME = 'osxkeychain';
+    const KEYCHAIN_SAVE = 'timely jira access';
 
     /**
      * Configures the "track" command
@@ -64,16 +67,21 @@ class Push extends AbstractReadCommand
     /**
      * Execute the command
      *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
+     * @param \Symfony\Component\Console\Input\InputInterface $input The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
      *
      * @return void
      *
      * {@inheritDoc}
+     * @throws JiraException
+     * @throws \JsonMapper_Exception
      * @see \Symfony\Component\Console\Command\Command::execute()
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+//        $passwd = $this->prompt_silent($output);
+//        $output->writeln('fertig für heute:'.$passwd.'#');
+
         // get the ticket
         $ticket = $input->getArgument('ticket');
 
@@ -103,7 +111,16 @@ class Push extends AbstractReadCommand
 
         // retrieve configuration
         $configuration = new DotEnvConfiguration();
+        $password = $configuration->getJiraPassword();
+        if (empty($password) || strtolower($password) === self::KEYCHAIN_NAME) {
+            $password = $this->getPasswdFromKeychain($output, $configuration);
+            if (empty($password)) {
+                return;
+            }
+            $configuration->setJiraPassword($password);
 
+        }
+        unset($password);
         $bookingsPushed = array();
         // get our issue service and push the tasks
         $issueService = new IssueService($configuration);
@@ -173,5 +190,47 @@ class Push extends AbstractReadCommand
         // write output
         $output->write(sprintf('Successfully pushed %s tasks.', count($bookingsPushed)), true);
 
+    }
+
+    /**
+     * Prompt silent
+     *
+     * Interactively prompts for input without echoing to the terminal.
+     * Requires a bash shell or Windows and won't work with
+     * safe_mode settings (Uses `shell_exec`)
+     *
+     * Source: http://www.sitepoint.com/interactive-cli-password-prompt-in-php/
+     *
+     * @param OutputInterface $output
+     * @param string $prompt
+     * @return string
+     */
+    function prompt_silent(OutputInterface $output, $prompt = "Enter Password:")
+    {
+        $command = "/usr/bin/env bash -c 'echo OK'";
+        if (rtrim(shell_exec($command)) !== 'OK') {
+            trigger_error("Can't invoke bash");
+            return '';
+        }
+        $command = "/usr/bin/env bash -c 'read -s -p \""
+                   . addslashes($prompt)
+                   . "\" mypassword && echo \$mypassword'";
+        $password = rtrim(shell_exec($command));
+        $output->writeln('');
+        return $password;
+    }
+
+    private function getPasswdFromKeychain(OutputInterface $output, ConfigurationInterface $configuration)
+    {
+        $password = rtrim(shell_exec("security find-generic-password -s '".self::KEYCHAIN_SAVE."' -w"));
+        if (empty($password)) {
+            $password = $this->prompt_silent($output, 'Please enter password for your jira account "'.$configuration->getJiraUser().'":');
+            if (empty($password)) {
+                $output->writeln('Empty password is not possible. Stop push ...');
+                return '';
+            }
+            shell_exec('security add-generic-password -a "'.$configuration->getJiraUser().'" -s "'.self::KEYCHAIN_SAVE.'" -w "'.$password.'"');
+        }
+        return $password;
     }
 }
