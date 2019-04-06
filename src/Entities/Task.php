@@ -107,6 +107,16 @@ class Task
     }
 
     /**
+     * Getter for the first booking of the task instance
+     *
+     * @return string
+     */
+    public function isPushed()
+    {
+        return $this->getStartBooking()->isPushed();
+    }
+
+    /**
      * Getter for the last booking of the task instance
      *
      * @return \Wicked\Timely\Entities\Booking

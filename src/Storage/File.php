@@ -64,6 +64,13 @@ class File implements StorageInterface
     protected $logFilePath;
 
     /**
+     * Save the last retrieve from file
+     *
+     * @var string
+     */
+    protected $lastRetrieve;
+
+    /**
      * Default constructor
      */
     public function __construct()
@@ -100,8 +107,41 @@ class File implements StorageInterface
         $bookString = $formatter->toString($booking);
 
         // write the new booking to the beginning of the file
+        $this->storeNewestStorageContent($bookString);
+    }
+
+    /**
+     * Stores a single booking that pushed
+     *
+     * @param \Wicked\Timely\Entities\Booking $booking The booking to store
+     *
+     * @return void
+     */
+    public function storePush(Booking $booking)
+    {
+        // get the formatter and convert to string
+        $formatter = FormatterFactory::getFormatter();
+        $bookString = $formatter->toString($booking);
+        $booking->setPushed(true);
+        $bookStringPushed = $formatter->toString($booking);
+
+        $content = $this->getStorageContent();
+        // replace the origin booking with the pushed
+        $content = str_replace($bookString, $bookStringPushed, $content);
         $path = $this->getLogFilePath();
-        file_put_contents($path, $bookString . file_get_contents($path));
+        file_put_contents($path, $content);
+    }
+
+    /**
+     * Get the content of the files storage
+     *
+     * @param string $bookString content to store
+     *
+     */
+    protected function storeNewestStorageContent($bookString)
+    {
+        $path = $this->getLogFilePath();
+        file_put_contents($path, $bookString . $this->getStorageContent());
     }
 
     /**
@@ -154,8 +194,8 @@ class File implements StorageInterface
         }
 
         // get the raw entries
-        $rawData = $this->getStorageContent();
-        $rawEntries = explode(self::LINE_BREAK, rtrim($rawData, self::LINE_BREAK));
+        $this->lastRetrieve = $this->getStorageContent();
+        $rawEntries = explode(self::LINE_BREAK, rtrim($this->lastRetrieve, self::LINE_BREAK));
 
         $entries = array();
 
@@ -172,7 +212,8 @@ class File implements StorageInterface
             ) {
                 // collect the actual booking
                 $comment = isset($entry[2]) ? $entry[2] : '';
-                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $pushed = isset($entry[3]) && !empty($entry[3]) ? true : false;
+                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0], $pushed);
                 $entries[] = $booking;
 
                 // increase the booking counter
@@ -222,7 +263,8 @@ class File implements StorageInterface
                 }
                 $entry = explode(self::SEPARATOR, trim($rawEntries[$i], ' |'));
                 $comment = isset($entry[2]) ? $entry[2] : '';
-                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0]);
+                $pushed = isset($entry[3]) && !empty($entry[3]) ? true : false;
+                $booking = BookingFactory::getBooking($comment, $entry[1], $entry[0], $pushed);
                 $entries[] = $booking;
                 // break after the first non-meta booking
                 if (!$booking->isMetaBooking()) {

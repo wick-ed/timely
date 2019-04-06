@@ -26,6 +26,7 @@ use JiraRestApi\JiraException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Wicked\Timely\Entities\TaskFactory;
+use Wicked\Timely\Formatter\FormatterFactory;
 use Wicked\Timely\Helper\Date;
 use Wicked\Timely\Storage\StorageFactory;
 
@@ -87,7 +88,7 @@ class Push extends AbstractReadCommand
         $this->prepareInputParams($input, $ticket, $fromDate, $toDate, $limit);
 
         // filter by ticket if given
-        /** @var \Wicked\Timely\Storage\StorageFactory $storage */
+        /** @var \Wicked\Timely\Storage\StorageInterface $storage */
         $storage = StorageFactory::getStorage();
         $bookings = $storage->retrieve($ticket, $toDate, $fromDate, $limit);
 
@@ -100,56 +101,77 @@ class Push extends AbstractReadCommand
         // get tasks from bookings
         $tasks = TaskFactory::getTasksFromBookings($bookings);
 
-        // create unique identity of task to reduce duplicate tasks being pushed
-        // @TODO
-
         // retrieve configuration
         $configuration = new DotEnvConfiguration();
 
-        try {
-            // get our issue service and push the tasks
-            $issueService = new IssueService($configuration);
-            foreach ($tasks as $task) {
-                // create a worklog from the task
-                $workLog = new Worklog();
-                $workLog->setComment($task->getComment())
-                    ->setStarted($task->getStartTime())
-                    ->setTimeSpent(Date::secondsToUnits(Date::roundByInterval($task->getDuration(), 900)));
+        $bookingsPushed = array();
+        // get our issue service and push the tasks
+        $issueService = new IssueService($configuration);
+        foreach ($tasks as $task) {
+            // Allready pushed to jira? take next one
+            if ($task->isPushed()) {
+                continue;
+            }
+            // create a worklog from the task
+            $workLog = new Worklog();
+            $workLog->setComment($task->getComment())
+                ->setStarted($task->getStartTime())
+                ->setTimeSpent(Date::secondsToUnits(Date::roundByInterval($task->getDuration(), 900)));
 
-                // check the sanity of our worklog and discard it if there is something missing
-                if (!$task->getTicketId() || empty($workLog->timeSpent) || empty($workLog->comment))
-                {
-                    $output->writeln('Not pushing one worklog as it misses vital information');
-                    continue;
-                }
+            // check the sanity of our worklog and discard it if there is something missing
+            if (!$task->getTicketId() || empty($workLog->timeSpent) || empty($workLog->comment))
+            {
+                $output->writeln('Not pushing one worklog as it misses vital information');
+                continue;
+            }
 
-                // log the worklog about to being pushed if output is verbose
-                if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                    $output->writeln(
-                        sprintf(
-                            '%s : %s > %s',
-                            $task->getTicketId(),
-                            $workLog->timeSpent,
-                            $workLog->comment
-                        )
-                    );
-                }
+            // log the worklog about to being pushed if output is verbose
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln(
+                    sprintf(
+                        '%s : %s > %s',
+                        $task->getTicketId(),
+                        $workLog->timeSpent,
+                        $workLog->comment
+                    )
+                );
+            }
 
+            try {
                 // push to remote
                 $issueService->addWorklog($task->getTicketId(), $workLog);
+
+                $output->writeln(
+                    sprintf(
+                        'PUSHED %s : %s > %s',
+                        $task->getTicketId(),
+                        $workLog->timeSpent,
+                        $workLog->comment
+                    )
+                );
+
+                $bookingsPushed[] = $task->getStartBooking();
+
+            } catch (JiraException $e) {
+                $output->write(
+                    sprintf(
+                        'Error while pushing. Status %s, with message: "%s"',
+                        $e->getCode(),
+                        $e->getMessage()
+                    )
+                );
             }
-        } catch (JiraException $e) {
-            $output->write(
-                sprintf(
-                    'Error while pushing. Status %s, with message: "%s"',
-                    $e->getCode(),
-                    $e->getMessage()
-                )
-            );
         }
 
+        foreach ($bookingsPushed as $booking) {
+            $storage->storePush($booking);
+            $formatter = FormatterFactory::getFormatter();
+            $bookString = $formatter->toString($booking);
+            $output->write($bookString, true);
+        }
 
         // write output
-        $output->write(sprintf('Successfully pushed %s tasks.', count($tasks)), true);
+        $output->write(sprintf('Successfully pushed %s tasks.', count($bookingsPushed)), true);
+
     }
 }

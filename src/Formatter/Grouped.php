@@ -117,6 +117,7 @@ Total: ca. ' . Date::secondsToUnits(Date::roundByInterval($this->totalDuration, 
             $ticketList .= implode(
                 self::SEPARATOR,
                 array(
+                    $task->isPushed() ? '*' : ' ',
                     $task->getStartTime(),
                     $task->getTicketId(),
                     Date::secondsToUnits($task->getDuration()),
