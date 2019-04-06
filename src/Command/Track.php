@@ -26,6 +26,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Wicked\Timely\Entities\Booking;
 use Wicked\Timely\Storage\StorageFactory;
+use Wicked\Timely\Entities\Pause as PauseEntity;
 
 /**
  * Class for the "track" command. Command is used to track time bookings
@@ -87,6 +88,13 @@ class Track extends Command
 
             // get the configured storage instance and store the booking
             $storage = StorageFactory::getStorage();
+            $lastBooking = $storage->retrieveLast(true);
+            if ($lastBooking->getTicketId() === PauseEntity::PAUSE_TAG_START) {
+                // create a new pause instance
+                $now = new \DateTime();
+                $pause = new PauseEntity('', true, $now->getTimestamp()-1);
+                $storage->store($pause);
+            }
             $storage->store($booking);
 
         } catch (Exception $e) {
