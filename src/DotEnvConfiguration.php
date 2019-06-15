@@ -20,4 +20,10 @@ class DotEnvConfiguration extends JiraDotEnvConfiguration
     {
         parent::__construct(realpath(__DIR__ . '/../'));
     }
+
+    public function setJiraPassword($value) {
+        $this->jiraPassword = $value;
+    }
+
+
 }
