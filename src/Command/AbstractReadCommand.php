@@ -104,11 +104,15 @@ abstract class AbstractReadCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param $ticket
-     * @param $toDate
-     * @param $fromDate
-     * @param $limit
+     * Will provide given input params in a usable format
+     *
+     * @param InputInterface  $input    The Symfony console input
+     * @param string          $ticket   Ticket ID handle, if given
+     * @param null|string|int $fromDate The date from which an action should be done
+     * @param null|string|int $toDate   The date up to which an action should be done
+     * @param int             $limit    Limit for the action, e.g. retrieving tasks
+     *
+     * @return void
      */
     protected function prepareInputParams(InputInterface $input, & $ticket, & $fromDate, & $toDate, & $limit)
     {

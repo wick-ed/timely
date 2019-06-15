@@ -117,15 +117,12 @@ class Pause extends Command
     /**
      * Assert that a given "resume" command makes sense
      *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
-     *
      * @return void
      *
-     * {@inheritDoc}
-     * @see \Symfony\Component\Console\Command\Command::execute()
+     * @throws \Exception
      */
-    protected function assertConsistentResume () {
+    protected function assertConsistentResume()
+    {
         $storage = StorageFactory::getStorage();
         $lastBooking = $storage->retrieveLast(true);
         if ($lastBooking->getTicketId() !== PauseEntity::PAUSE_TAG_START) {
@@ -134,17 +131,14 @@ class Pause extends Command
     }
 
     /**
-     * Assert that a given "start" command makes sense
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
+     * Assert that a given "pause" command makes sense
      *
      * @return void
      *
-     * {@inheritDoc}
-     * @see \Symfony\Component\Console\Command\Command::execute()
+     * @throws \Exception
      */
-    protected function assertConsistentPause () {
+    protected function assertConsistentPause()
+    {
         $storage = StorageFactory::getStorage();
         $lastBooking = $storage->retrieveLast(true);
         if ($lastBooking->getTicketId() === PauseEntity::PAUSE_TAG_START) {

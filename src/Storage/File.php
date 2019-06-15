@@ -137,6 +137,7 @@ class File implements StorageInterface
      *
      * @param string $bookString content to store
      *
+     * @return void
      */
     protected function storeNewestStorageContent($bookString)
     {
@@ -161,7 +162,8 @@ class File implements StorageInterface
      *
      * @return \Wicked\Timely\Entities\Booking
      */
-    public function retrieveLast($includeMetaTickets = false) {
+    public function retrieveLast($includeMetaTickets = false)
+    {
         $tmp = $this->retrieve(null, null, null, 1, true, $includeMetaTickets);
         return array_pop($tmp);
     }

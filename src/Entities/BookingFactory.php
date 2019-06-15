@@ -40,7 +40,7 @@ class BookingFactory
      *
      * @return \Wicked\Timely\Entities\Booking
      */
-    public static function getBooking($comment, $ticketId = '', $time = null, $pushed=false)
+    public static function getBooking($comment, $ticketId = '', $time = null, $pushed = false)
     {
         switch ($ticketId) {
 

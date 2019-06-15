@@ -67,8 +67,6 @@ class Pause extends Booking
     /**
      * Whether or not this booking can be the start of a task
      *
-     * @param boolean $includePause Whether or not pauses are included as task building bookings
-     *
      * @return boolean
      */
     public function isPauseEnd()
