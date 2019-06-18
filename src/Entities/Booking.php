@@ -65,11 +65,16 @@ class Booking
      */
     protected $metaTicketIds = array();
 
-
-    /** @var bool */
+    /**
+     * Whether or not the booking has already been pushed
+     *
+     * @var bool $pushed
+     */
     private $pushed;
 
     /**
+     * Whether or not the booking has already been pushed
+     *
      * @return bool
      */
     public function isPushed()
@@ -78,7 +83,11 @@ class Booking
     }
 
     /**
-     * @param bool $pushed
+     * Setter for the pushed property
+     *
+     * @param bool $pushed Whether or not this booking has already been pushed
+     *
+     * @return void
      */
     public function setPushed($pushed)
     {
@@ -154,7 +163,7 @@ class Booking
      * @param null|string|integer $time     [optional] Time of this booking. Defaults to NULL
      * @param bool                $pushed   [optional] If pushed to jira worklog
      */
-    public function __construct($comment, $ticketId = '', $time = null, $pushed=false)
+    public function __construct($comment, $ticketId = '', $time = null, $pushed = false)
     {
         // get the arguments
         $this->ticketId = trim($ticketId);

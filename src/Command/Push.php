@@ -42,6 +42,11 @@ use Wicked\Timely\Storage\StorageFactory;
 class Push extends AbstractReadCommand
 {
 
+    /**
+     * Constants used within this command
+     *
+     * @var string
+     */
     const COMMAND_NAME = 'push';
     const KEYCHAIN_NAME = 'osxkeychain';
     const KEYCHAIN_SAVE = 'timely jira access';
@@ -67,7 +72,7 @@ class Push extends AbstractReadCommand
     /**
      * Execute the command
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input The command input
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
      *
      * @return void
@@ -79,7 +84,7 @@ class Push extends AbstractReadCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-//        $passwd = $this->prompt_silent($output);
+//        $passwd = $this->promptSilent($output);
 //        $output->writeln('fertig für heute:'.$passwd.'#');
 
         // get the ticket
@@ -113,7 +118,7 @@ class Push extends AbstractReadCommand
         $configuration = new DotEnvConfiguration();
         $password = $configuration->getJiraPassword();
         if (empty($password) || strtolower($password) === self::KEYCHAIN_NAME) {
-            $password = $this->getPasswdFromKeychain($output, $configuration);
+            $password = $this->getPasswordFromKeychain($output, $configuration);
             if (empty($password)) {
                 return;
             }
@@ -136,8 +141,7 @@ class Push extends AbstractReadCommand
                 ->setTimeSpent(Date::secondsToUnits(Date::roundByInterval($task->getDuration(), 900)));
 
             // check the sanity of our worklog and discard it if there is something missing
-            if (!$task->getTicketId() || empty($workLog->timeSpent) || empty($workLog->comment))
-            {
+            if (!$task->getTicketId() || empty($workLog->timeSpent) || empty($workLog->comment)) {
                 $output->writeln('Not pushing one worklog as it misses vital information');
                 continue;
             }
@@ -201,11 +205,12 @@ class Push extends AbstractReadCommand
      *
      * Source: http://www.sitepoint.com/interactive-cli-password-prompt-in-php/
      *
-     * @param OutputInterface $output
-     * @param string $prompt
+     * @param OutputInterface $output Console output interface
+     * @param string          $prompt The message to the user
+     *
      * @return string
      */
-    function prompt_silent(OutputInterface $output, $prompt = "Enter Password:")
+    protected function promptSilent(OutputInterface $output, $prompt = "Enter Password:")
     {
         $command = "/usr/bin/env bash -c 'echo OK'";
         if (rtrim(shell_exec($command)) !== 'OK') {
@@ -220,11 +225,19 @@ class Push extends AbstractReadCommand
         return $password;
     }
 
-    private function getPasswdFromKeychain(OutputInterface $output, ConfigurationInterface $configuration)
+    /**
+     * Will retrieve a stored password from the OSX keychain
+     *
+     * @param OutputInterface        $output        Console output interface
+     * @param ConfigurationInterface $configuration Jira configuration
+     *
+     * @return string
+     */
+    private function getPasswordFromKeychain(OutputInterface $output, ConfigurationInterface $configuration)
     {
         $password = rtrim(shell_exec("security find-generic-password -s '".self::KEYCHAIN_SAVE."' -w"));
         if (empty($password)) {
-            $password = $this->prompt_silent($output, 'Please enter password for your jira account "'.$configuration->getJiraUser().'":');
+            $password = $this->promptSilent($output, 'Please enter password for your jira account "'.$configuration->getJiraUser().'":');
             if (empty($password)) {
                 $output->writeln('Empty password is not possible. Stop push ...');
                 return '';

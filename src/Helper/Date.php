@@ -78,8 +78,9 @@ class Date
     /**
      * Formats a timespan into a string of the format 0d 0h 0m
      *
-     * @param integer $timespan The timespan in seconds to format
-     * @param integer $interval The interval in seconds to round against
+     * @param integer $timespan       The timespan in seconds to format
+     * @param integer $interval       The interval in seconds to round against
+     * @param boolean $enforceMinimum Whether or not a configurable minimal timespan should be used
      *
      * @return string
      */
