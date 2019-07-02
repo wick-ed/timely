@@ -1,5 +1,6 @@
 /target
-/data/timely-log.txt
+/data/*
+!/data/.gitkeep
 /vendor/
 /instance-src
 /src/vendor
