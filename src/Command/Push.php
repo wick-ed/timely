@@ -130,7 +130,7 @@ class Push extends AbstractReadCommand
         // get our issue service and push the tasks
         $issueService = new IssueService($configuration);
         foreach ($tasks as $task) {
-            // Allready pushed to jira? take next one
+            // Already pushed to jira? take next one
             if ($task->isPushed()) {
                 continue;
             }

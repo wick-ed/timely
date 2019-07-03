@@ -113,6 +113,10 @@ class Task
      */
     public function isPushed()
     {
+        $firstIntermediate = reset($this->intermediateBookings);
+        if ($this->isClipped() && $firstIntermediate instanceof Pause && $firstIntermediate->isPauseEnd()) {
+            return $firstIntermediate->isPushed();
+        }
         return $this->getStartBooking()->isPushed();
     }
 
