@@ -12,7 +12,7 @@ before_script:
 script:
   - composer install
   - vendor/bin/phpcs -n --report-full --report-checkstyle=target/reports/phpcs.xml --extensions=php --standard=PSR2 --ignore=.metadata src
-  - vendor/bin/phpunit --bootstrap bootstrap.php --configuration phpunit.xml
+  - vendor/bin/phpunit --bootstrap bootstrap.php --configuration phpunit.xml --coverage-clover=coverage.clover
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
