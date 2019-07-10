@@ -6,8 +6,7 @@ php:
   - 7.1
 
 before_install:
-  - pecl install xdebug
-  - phpenv rehash
+  - phpenv config-add xdebug.ini
 
 before_script:
   - composer selfupdate
