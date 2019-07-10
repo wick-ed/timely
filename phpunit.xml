@@ -16,9 +16,7 @@
     </filter>
     <!-- Code coverage report, optional -->
     <logging>
-        <log type="coverage-html" target="target/reports/unit/coverage"/>
         <log type="coverage-clover" target="target/reports/unit/clover.xml"/>
-        <log type="junit" target="target/reports/unit/junit.xml" logIncompleteSkipped="false"/>
     </logging>
     <php>
         <ini name="date.timezone" value="Europe/Berlin"/>
