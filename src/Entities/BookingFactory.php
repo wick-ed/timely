@@ -43,7 +43,6 @@ class BookingFactory
     public static function getBooking($comment, $ticketId = '', $time = null, $pushed = false)
     {
         switch ($ticketId) {
-
             case Clipping::CLIPPING_TAG_FRONT:
                 return new Clipping(true, $time);
                 break;

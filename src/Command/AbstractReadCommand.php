@@ -121,13 +121,11 @@ abstract class AbstractReadCommand extends Command
             // set the fromDate to today, and clear the ticket
             $fromDate = strtotime(date('Y-m-d', time()));
             $ticket = null;
-
         } elseif ($ticket === self::FILTER_KEYWORD_YESTERDAY) {
             // set the fromDate to yesterday, the toDate to today and clear the ticket
             $fromDate = strtotime(date('Y-m-d', time() - 24 * 60 * 60));
             $toDate = strtotime(date('Y-m-d', time()));
             $ticket = null;
-
         } else {
             // check for options first
             if ($input->getOption(self::OPTION_TO)) {

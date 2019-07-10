@@ -219,7 +219,6 @@ class Task
         foreach ($intermediateBookings as $intermediateBooking) {
             if ($intermediateBooking->canStartTask()) {
                 $startBooking = $intermediateBooking;
-
             } elseif ($intermediateBooking->getTicketId() === Clipping::CLIPPING_TAG_REAR) {
                 $endBooking = $intermediateBooking;
             }

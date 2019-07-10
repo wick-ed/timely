@@ -54,7 +54,6 @@ class FormatterFactory
     public static function getFormatter($channel = null)
     {
         switch ($channel) {
-
             case self::OUTPUT_CHANNEL:
                 return new Grouped();
                 break;

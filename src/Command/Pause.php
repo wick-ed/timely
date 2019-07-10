@@ -105,7 +105,6 @@ class Pause extends Command
             // get the configured storage instance and store the booking
             $storage = StorageFactory::getStorage();
             $storage->store($pause);
-
         } catch (\Exception $e) {
             $result = $e->getMessage();
         }

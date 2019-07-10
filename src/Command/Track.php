@@ -96,8 +96,7 @@ class Track extends Command
                 $storage->store($pause);
             }
             $storage->store($booking);
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = $e->getMessage();
         }
 

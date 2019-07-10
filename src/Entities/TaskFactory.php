@@ -76,7 +76,6 @@ class TaskFactory
                     // reset the tmp vars
                     $startBooking = $booking->canStartTask($includePauses) ? $booking : null;
                     $intermediateBookings = array();
-
                 } else {
                     // collect as intermediate
                     $intermediateBookings[] = $booking;

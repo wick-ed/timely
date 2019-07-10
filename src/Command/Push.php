@@ -123,7 +123,6 @@ class Push extends AbstractReadCommand
                 return;
             }
             $configuration->setJiraPassword($password);
-
         }
         unset($password);
         $bookingsPushed = array();
@@ -172,7 +171,6 @@ class Push extends AbstractReadCommand
                 );
 
                 $bookingsPushed[] = $task->getStartBooking();
-
             } catch (JiraException $e) {
                 $output->write(
                     sprintf(
@@ -193,7 +191,6 @@ class Push extends AbstractReadCommand
 
         // write output
         $output->write(sprintf('Successfully pushed %s tasks.', count($bookingsPushed)), true);
-
     }
 
     /**
