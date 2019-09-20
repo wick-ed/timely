@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\Storage\StorageFactory
+ * \Wicked\Timely\PushServices\PushServiceInterface
  *
  * NOTICE OF LICENSE
  *
@@ -17,25 +17,20 @@
  * @link      https://github.com/wick-ed/timely
  */
 
-namespace Wicked\Timely\Storage;
+namespace Wicked\Timely\PushServices\Authentication;
 
 /**
- * Storage factory
+ * Date helper
  *
  * @author    wick-ed
  * @copyright 2016 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class StorageFactory
+interface PasswordRetrievalStrategyInterface
 {
     /**
-     * Factory method for the storage
-     *
-     * @return \Wicked\Timely\Storage\StorageInterface
+     * @return string
      */
-    public static function getStorage()
-    {
-        return new File();
-    }
+    public function getPassword();
 }
