@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\PushServices\PushServiceInterface
+ * \Wicked\Timely\PushServices\AuthenticationAwarePushServiceInterface
  *
  * NOTICE OF LICENSE
  *
@@ -19,8 +19,6 @@
 
 namespace Wicked\Timely\PushServices;
 
-use Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface;
-
 /**
  * Date helper
  *
@@ -31,10 +29,4 @@ use Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface
  */
 interface AuthenticationAwarePushServiceInterface
 {
-    /**
-     * @param PasswordRetrievalStrategyInterface $passwordRetrievalStrategy
-     *
-     * @return void
-     */
-    public function injectPasswortRetrievalStrategy(PasswordRetrievalStrategyInterface $passwordRetrievalStrategy);
 }

@@ -41,13 +41,25 @@ class MacOsPasswordRetrievalStrategy implements PasswordRetrievalStrategyInterfa
     const KEYCHAIN_SAVE = 'timely jira access';
 
     /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @var ConfigurationInterface
+     */
+    protected $configuration;
+
+    /**
      * MacOsPasswordRetrievalStrategy constructor.
      *
      * @param OutputInterface $output
+     * @param ConfigurationInterface $configuration
      */
-    public function __construct(OutputInterface $output)
+    public function __construct(OutputInterface $output, ConfigurationInterface $configuration)
     {
-        
+        $this->output = $output;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -82,21 +94,18 @@ class MacOsPasswordRetrievalStrategy implements PasswordRetrievalStrategyInterfa
     /**
      * Will retrieve a stored password from the OSX keychain
      *
-     * @param OutputInterface        $output        Console output interface
-     * @param ConfigurationInterface $configuration Jira configuration
-     *
      * @return string
      */
-    public function getPassword(OutputInterface $output, ConfigurationInterface $configuration)
+    public function getPassword()
     {
         $password = rtrim(shell_exec("security find-generic-password -s '".self::KEYCHAIN_SAVE."' -w"));
         if (empty($password)) {
-            $password = $this->promptSilent($output, 'Please enter password for your jira account "'.$configuration->getJiraUser().'":');
+            $password = $this->promptSilent($this->output, 'Please enter password for your jira account "'.$this->configuration->getJiraUser().'":');
             if (empty($password)) {
-                $output->writeln('Empty password is not possible. Stop push ...');
+                $this->output->writeln('Empty password is not possible. Stop push ...');
                 return '';
             }
-            shell_exec('security add-generic-password -a "'.$configuration->getJiraUser().'" -s "'.self::KEYCHAIN_SAVE.'" -w "'.$password.'"');
+            shell_exec('security add-generic-password -a "'.$this->configuration->getJiraUser().'" -s "'.self::KEYCHAIN_SAVE.'" -w "'.$password.'"');
         }
         return $password;
     }

@@ -21,15 +21,13 @@ namespace Wicked\Timely\PushServices;
 
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\Issue\Worklog;
-use JiraRestApi\JiraException;
-use Symfony\Component\Console\Output\OutputInterface;
 use Wicked\Timely\DotEnvConfiguration;
 use Wicked\Timely\Entities\Task;
 use Wicked\Timely\Helper\Date;
 use Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface;
 
 /**
- * Date helper
+ * Jira push service
  *
  * @author    wick-ed
  * @copyright 2016 Bernhard Wick
@@ -52,10 +50,13 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
     /**
      * Jira constructor.
      *
+     * @param PasswordRetrievalStrategyInterface $passwordRetrievalStrategy
+     *
      * @throws \JiraRestApi\JiraException
      */
-    public function __construct()
+    public function __construct(PasswordRetrievalStrategyInterface $passwordRetrievalStrategy)
     {
+        $this->passwordRetrievalStrategy = $passwordRetrievalStrategy;
         $this->init();
     }
 
@@ -78,14 +79,6 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
             $configuration->setJiraPassword($password);
         }
         $this->issueService = new IssueService($configuration);
-    }
-
-    /**
-     * @param PasswordRetrievalStrategyInterface $passwordRetrievalStrategy
-     */
-    public function injectPasswortRetrievalStrategy(PasswordRetrievalStrategyInterface $passwordRetrievalStrategy)
-    {
-        $this->passwordRetrievalStrategy = $passwordRetrievalStrategy;
     }
 
     /**

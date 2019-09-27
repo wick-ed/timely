@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\PushServices\PushServiceInterface
+ * \Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface
  *
  * NOTICE OF LICENSE
  *
