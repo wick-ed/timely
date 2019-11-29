@@ -127,7 +127,7 @@ abstract class AbstractReadCommand extends Command
      *
      * @return void
      */
-    protected function prepareInputParams(InputInterface $input, & $ticket, & $fromDate, & $toDate, & $limit)
+    protected function prepareInputParams(InputInterface $input, &$ticket, &$fromDate, &$toDate, &$limit)
     {
         // check if we got a keyword
         if ($ticket === self::FILTER_KEYWORD_TODAY) {

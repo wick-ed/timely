@@ -45,8 +45,7 @@ class PushServiceFactory
     {
         $configuration = new DotEnvConfiguration();
         $pushService = $configuration->getPushService();
-        switch ($pushService)
-        {
+        switch ($pushService) {
             case 'jira':
                 $passwordRetrievalStrategy = new MacOsPasswordRetrievalStrategy($output, $configuration);
                 $pushService = new Jira($passwordRetrievalStrategy);
