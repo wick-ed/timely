@@ -71,8 +71,8 @@ The following command would create e.g. Jira worklogs for yesterday's tasks:
 
 The <info>%command.name%</info> command keeps track of already pushed time trackings so nothing gets pushed twice.
 EOF
-    )
-    ;
+        )
+        ;
         // add all the read options from the abstract super class
         parent::configure();
     }
