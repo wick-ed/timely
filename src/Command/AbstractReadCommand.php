@@ -74,6 +74,13 @@ abstract class AbstractReadCommand extends Command
     const OPTION_FROM = 'from';
 
     /**
+     * Constant for the "interval" option
+     *
+     * @var string OPTION_SPECIFIC
+     */
+    const OPTION_SPECIFIC = 'interval';
+
+    /**
      * Configures the "show" command
      *
      * @return void
@@ -91,13 +98,19 @@ abstract class AbstractReadCommand extends Command
         )
             ->addOption(
                 self::OPTION_FROM,
-                null,
+                substr(strtolower(self::OPTION_FROM), 0, 1),
                 InputOption::VALUE_REQUIRED,
                 'Show from a certain date on'
             )
             ->addOption(
+                self::OPTION_SPECIFIC,
+                substr(strtolower(self::OPTION_SPECIFIC), 0, 1),
+                InputOption::VALUE_REQUIRED,
+                'Show only for a specific date'
+            )
+            ->addOption(
                 self::OPTION_TO,
-                null,
+                substr(strtolower(self::OPTION_TO), 0, 1),
                 InputOption::VALUE_REQUIRED,
                 'Show up to a certain date'
             );
@@ -128,18 +141,27 @@ abstract class AbstractReadCommand extends Command
             $ticket = null;
         } else {
             // check for options first
-            if ($input->getOption(self::OPTION_TO)) {
+            if ($input->getOption(self::OPTION_SPECIFIC)) {
                 // test for valid format
-                $tmpDate = strtotime($input->getOption(self::OPTION_TO));
-                if ($tmpDate !== false) {
-                    $toDate = $tmpDate;
-                }
-            }
-            if ($input->getOption(self::OPTION_FROM)) {
-                // test for valid format
-                $tmpDate = strtotime($input->getOption(self::OPTION_FROM));
+                $tmpDate = strtotime($input->getOption(self::OPTION_SPECIFIC));
                 if ($tmpDate !== false) {
                     $fromDate = $tmpDate;
+                    $toDate = $fromDate + 24 * 60 * 60;
+                }
+            } else {
+                if ($input->getOption(self::OPTION_TO)) {
+                    // test for valid format
+                    $tmpDate = strtotime($input->getOption(self::OPTION_TO));
+                    if ($tmpDate !== false) {
+                        $toDate = $tmpDate;
+                    }
+                }
+                if ($input->getOption(self::OPTION_FROM)) {
+                    // test for valid format
+                    $tmpDate = strtotime($input->getOption(self::OPTION_FROM));
+                    if ($tmpDate !== false) {
+                        $fromDate = $tmpDate;
+                    }
                 }
             }
         }

@@ -65,7 +65,7 @@ class Pause extends Command
         )
             ->addOption(
                 self::OPTION_RESUME,
-                null,
+                substr(strtolower(self::OPTION_RESUME), 0, 1),
                 InputOption::VALUE_NONE,
                 'Will resume the task tracked before a pause has happened'
             );
