@@ -74,11 +74,11 @@ abstract class AbstractReadCommand extends Command
     const OPTION_FROM = 'from';
 
     /**
-     * Constant for the "interval" option
+     * Constant for the "specific" option
      *
      * @var string OPTION_SPECIFIC
      */
-    const OPTION_SPECIFIC = 'interval';
+    const OPTION_SPECIFIC = 'specific';
 
     /**
      * Configures the "show" command
