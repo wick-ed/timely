@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -31,7 +31,7 @@ use Wicked\Timely\Formatter\FormatterFactory;
  * Class for the "show" command. Command used to print all tracked times
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -94,13 +94,13 @@ abstract class AbstractReadCommand extends Command
         ->addArgument(
             'ticket',
             InputArgument::OPTIONAL,
-            'Show tracked times for a certain ticket'
+            'Filter tracked times for a certain (ticket) identifier.'
         )
             ->addOption(
                 self::OPTION_FROM,
                 substr(strtolower(self::OPTION_FROM), 0, 1),
                 InputOption::VALUE_REQUIRED,
-                'Show from a certain date on'
+                'filter from a certain date on. Accepts PHP date and time formats. See help section for further information.'
             )
             ->addOption(
                 self::OPTION_SPECIFIC,
@@ -113,7 +113,39 @@ abstract class AbstractReadCommand extends Command
                 substr(strtolower(self::OPTION_TO), 0, 1),
                 InputOption::VALUE_REQUIRED,
                 'Show up to a certain date'
-            );
+            )->setHelp($this->getHelp() . PHP_EOL . PHP_EOL . <<<'EOF'
+The tracked times in question can also be filter by supplying the optional (ticket) identifier:
+
+  <info>timely %command.name% FOO-42</info>
+
+You can further filter by narrowing the time interval.
+This can be done by using supplied filter keywords <info>current</info>, <info>today</info> or <info>yesterday</info>:
+
+  <info>timely %command.name% current</info>
+  or
+  <info>timely %command.name% yesterday</info>
+
+This filters for the tracking currently active (as in "what you are currently doing") or all tracked times of yesterday.
+
+Filtering the processed time trackings is also possible through the <info>from</info>, <info>to</info> and <info>specific</info> options.
+These options support the PHp date and time format as described here: https://www.php.net/manual/en/datetime.formats.php
+This allows for refined filtering as shown in the examples below.
+
+Filter for a certain specific date:
+<info>timely %command.name% -s 2019-11-28</info>
+
+Filter for a given time range:
+<info>timely %command.name% -f 2019-11-28 -t 2019-11-30</info>
+
+Filter for the last week:
+<info>timely %command.name% -f"-1 week"</info>
+
+Filter for everything within the last October:
+<info>timely %command.name% -f"first day of october" -t"last day of october"</info>
+
+EOF
+            )
+        ;
     }
 
     /**

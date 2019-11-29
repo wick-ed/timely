@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -31,7 +31,7 @@ use Wicked\Timely\Storage\StorageFactory;
  * Class for the "track" command. Command is used to track time bookings
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -57,8 +57,22 @@ class Push extends AbstractReadCommand
     {
         $this
         ->setName(static::COMMAND_NAME)
-        ->setDescription('Pushes booked times against the configured remote');
+        ->setDescription('Pushes booked times against the configured remote')
+        ->setHelp(<<<'EOF'
+The <info>%command.name%</info> command is used to push tracked times to an external time keeping service.
+Jira being an example of a supported service.
 
+The command has the same syntax and usability as the <info>show</info> command.
+On execution the command will use the service's internal format to process all tracked times that a similar <info>show</info> command would have displayed.
+
+The following command would create e.g. Jira worklogs for yesterday's tasks:
+
+<info>timely %command.name% yesterday</info>
+
+The <info>%command.name%</info> command keeps track of already pushed time trackings so nothing gets pushed twice.
+EOF
+    )
+    ;
         // add all the read options from the abstract super class
         parent::configure();
     }

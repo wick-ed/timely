@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -31,12 +31,19 @@ use Wicked\Timely\Formatter\FormatterFactory;
  * Class for the "show" command. Command used to print all tracked times
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
 class Show extends AbstractReadCommand
 {
+
+    /**
+     * Constants used within this command
+     *
+     * @var string
+     */
+    const COMMAND_NAME = 'show';
 
     /**
      * Configures the "show" command
@@ -49,8 +56,24 @@ class Show extends AbstractReadCommand
     protected function configure()
     {
         $this
-        ->setName('show')
-        ->setDescription('Show tracked times');
+            ->setName(static::COMMAND_NAME)
+            ->setDescription('Show tracked times')
+            ->setHelp(<<<'EOF'
+The <info>%command.name%</info> command is used to display times you have already tracked.
+By default, these times are grouped by the (ticket) identifier you used for tracking.
+Example output would look like this:
+
+<info>
+FOO-42     2019-11-28 17:41:17 -> 2019-11-29 15:59:25
+====================================================
+    * | 2019-11-28 17:41:17 | FOO-42 | 1h 15m | Doing some stuff now
+    -------------------------------------------------
+    1h 15m
+</info>
+Only tracked activities that already last or lasted longer than 15 minutes are shown.
+EOF
+            )
+        ;
 
         // add all the read options from the abstract super class
         parent::configure();

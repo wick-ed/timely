@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
@@ -31,12 +31,18 @@ use Wicked\Timely\Entities\Pause as PauseEntity;
  * Class for the "pause" command. Command used pause current tracking
  *
  * @author    wick-ed
- * @copyright 2016 Bernhard Wick
+ * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
 class Pause extends Command
 {
+    /**
+     * Constants used within this command
+     *
+     * @var string
+     */
+    const COMMAND_NAME = 'pause';
 
     /**
      * Constant for the "resume" option
@@ -44,6 +50,13 @@ class Pause extends Command
      * @var string OPTION_RESUME
      */
     const OPTION_RESUME = 'resume';
+
+    /**
+     * Constants for arguments
+     *
+     * @var string
+     */
+    const ARGUMENT_PAUSE_COMMENT = 'comment';
 
     /**
      * Configures the "pause" command
@@ -56,19 +69,33 @@ class Pause extends Command
     protected function configure()
     {
         $this
-        ->setName('pause')
-        ->setDescription('Pause current tracking')
-        ->addArgument(
-            'comment',
-            InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
-            'Comment why currently tracked task is paused'
-        )
+            ->setName(static::COMMAND_NAME)
+            ->setDescription('Pause current tracking, e.g. for a break.')
+            ->addArgument(
+                static::ARGUMENT_PAUSE_COMMENT,
+                InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+                'Optional comment as to why the currently tracked task is paused'
+            )
             ->addOption(
                 self::OPTION_RESUME,
                 substr(strtolower(self::OPTION_RESUME), 0, 1),
                 InputOption::VALUE_NONE,
                 'Will resume the task tracked before a pause has happened'
-            );
+            )
+            ->setHelp(<<<'EOF'
+The <info>%command.name%</info> command allows to pause the tracking of your current task.
+This makes sense e.g. for a small break, lunch or simply for leaving work to continue the next morning.
+
+  <info>timely %command.name% going for lunch</info>
+
+After the pause it over, the current tracking must be resumed:
+
+  <info>timely %command.name% -r</info>
+
+If you start with something else, using the <info>track</info> command during an ongoing pause will also end the pause automatically.
+EOF
+            )
+        ;
     }
 
     /**
