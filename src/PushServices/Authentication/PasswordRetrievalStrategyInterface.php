@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \Wicked\Timely\Formatter\FormatterInterface
+ * \Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface
  *
  * NOTICE OF LICENSE
  *
@@ -17,27 +17,20 @@
  * @link      https://github.com/wick-ed/timely
  */
 
-namespace Wicked\Timely\Formatter;
-
-use Wicked\Timely\Entities\Booking;
+namespace Wicked\Timely\PushServices\Authentication;
 
 /**
- * Formatter interface
+ * Date helper
  *
  * @author    wick-ed
  * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-interface FormatterInterface
+interface PasswordRetrievalStrategyInterface
 {
-
     /**
-     * Formats a booking into a string
-     *
-     * @param \Wicked\Timely\Entities\Booking[]|\Wicked\Timely\Entities\Booking $bookings The bookings to format
-     *
      * @return string
      */
-    public function toString($bookings);
+    public function getPassword();
 }

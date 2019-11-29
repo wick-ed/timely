@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * \Wicked\Timely\PushServices\AuthenticationAwarePushServiceInterface
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -9,11 +11,22 @@
  *
  * PHP version 5
  *
- * @author    Bernhard Wick <wick.b@hotmail.de>
+ * @author    wick-ed
  * @copyright 2020 Bernhard Wick
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
 
-$loader = require 'vendor/autoload.php';
-$loader->add('Wicked\\Timely', 'src');
+namespace Wicked\Timely\PushServices;
+
+/**
+ * Date helper
+ *
+ * @author    wick-ed
+ * @copyright 2020 Bernhard Wick
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/wick-ed/timely
+ */
+interface AuthenticationAwarePushServiceInterface
+{
+}
