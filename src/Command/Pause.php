@@ -133,7 +133,8 @@ EOF
             $storage = StorageFactory::getStorage();
             $storage->store($pause);
         } catch (\Exception $e) {
-            $result = $e->getMessage();
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return;
         }
 
         // write output

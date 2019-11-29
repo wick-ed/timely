@@ -146,7 +146,7 @@ EOF
             } catch (\Exception $e) {
                 $output->write(
                     sprintf(
-                        'Error while pushing. Status %s, with message: "%s"',
+                        '<erro>Error while pushing. Status %s, with message: "%s"</erro>',
                         $e->getCode(),
                         $e->getMessage()
                     )

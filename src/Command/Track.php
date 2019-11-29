@@ -124,7 +124,8 @@ EOF
             }
             $storage->store($booking);
         } catch (\Exception $e) {
-            $result = $e->getMessage();
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return;
         }
 
         // write output
