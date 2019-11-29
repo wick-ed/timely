@@ -37,7 +37,7 @@ class Flat implements FormatterInterface
      *
      * @var string LINE_BREAK
      */
-    const LINE_BREAK = ';';
+    const LINE_BREAK = ';' . PHP_EOL;
 
     /**
      * Default character sequence for segment separation
@@ -71,7 +71,7 @@ class Flat implements FormatterInterface
                     $booking->getComment(),
                     $booking->isPushed() ? 'jira '.date('Y-m-d H:i:s').'' : ''
                 )
-            ) . self::LINE_BREAK . "\n";
+            ) . self::LINE_BREAK;
         }
         return $result;
     }
