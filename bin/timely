@@ -19,6 +19,8 @@ use Wicked\Timely\Command\Pause;
 use Wicked\Timely\Command\Push;
 
 $application = new Application();
+$application->setName('timely');
+$application->setVersion('2.1.0');
 $application->addCommands(
     array(
         new Track(),
