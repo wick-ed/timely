@@ -22,6 +22,7 @@ namespace Wicked\Timely\Command;
 use JiraRestApi\JiraException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Wicked\Timely\Entities\Booking;
 use Wicked\Timely\Entities\TaskFactory;
 use Wicked\Timely\Formatter\FormatterFactory;
 use Wicked\Timely\PushServices\PushServiceFactory;
@@ -119,10 +120,8 @@ EOF
         // get tasks from bookings
         $tasks = TaskFactory::getTasksFromBookings($bookings);
 
-        unset($password);
-        $bookingsPushed = array();
-
         // get our issue service and push the tasks
+        $bookingsPushed = array();
         $pushService = PushServiceFactory::getService($output);
         foreach ($tasks as $task) {
             // Already pushed to jira? take next one
@@ -154,11 +153,22 @@ EOF
             }
         }
 
+        // mark the bookings as pushed in our storage
         foreach ($bookingsPushed as $booking) {
             $storage->storePush($booking);
             $formatter = FormatterFactory::getFormatter();
             $bookString = $formatter->toString($booking);
             $output->write($bookString, true);
+        }
+
+        // if the last task has been cut off by pushing we will re-add it's start booking
+        $lastTask = end($tasks);
+        if ($lastTask->isOngoing() && !$lastTask->isPaused()) {
+            $continuedBooking = new Booking(
+                $lastTask->getComment(),
+                $lastTask->getTicketId()
+            );
+            $storage->store($continuedBooking);
         }
 
         // write output

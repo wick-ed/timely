@@ -73,6 +73,30 @@ class Task
     protected $isClipped = false;
 
     /**
+     * Default constructor
+     *
+     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
+     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
+     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
+     */
+    public function __construct($startBooking, $endBooking, $intermediateBookings)
+    {
+        // set the properties
+        $this->startBooking = $startBooking;
+        $this->endBooking = $endBooking;
+        $this->intermediateBookings = $intermediateBookings;
+        // calculate the duration
+        $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateBookings);
+        // determine if we are being clipped
+        foreach ($intermediateBookings as $intermediateBooking) {
+            if ($intermediateBooking instanceof Clipping) {
+                $this->isClipped = true;
+                break;
+            }
+        }
+    }
+
+    /**
      * Getter for the first booking of the task instance
      *
      * @return \Wicked\Timely\Entities\Booking
@@ -173,7 +197,7 @@ class Task
     /**
      * Getter for the task duration
      *
-     * @return integer
+     * @return bool
      */
     protected function isClipped()
     {
@@ -181,25 +205,30 @@ class Task
     }
 
     /**
-     * Default constructor
+     * Whether or not the task is still ongoing
      *
-     * @param \Wicked\Timely\Entities\Booking   $startBooking         The first booking of the task
-     * @param \Wicked\Timely\Entities\Booking   $endBooking           The last booking of the task
-     * @param \Wicked\Timely\Entities\Booking[] $intermediateBookings Bookings within this task
+     * @return bool
      */
-    public function __construct($startBooking, $endBooking, $intermediateBookings)
+    public function isOngoing()
     {
-        // set the properties
-        $this->startBooking = $startBooking;
-        $this->endBooking = $endBooking;
-        $this->intermediateBookings = $intermediateBookings;
-        // calculate the duration
-        $this->duration = $this->calculateDuration($startBooking, $endBooking, $intermediateBookings);
-        // determine if we are being clipped
-        foreach ($intermediateBookings as $intermediateBooking) {
-            if ($intermediateBooking instanceof Clipping) {
-                $this->isClipped = true;
-                break;
+        return ($this->getEndBooking()->getTicketId() === Clipping::CLIPPING_TAG_REAR);
+    }
+
+    /**
+     * Whether or not the task is currently paused
+     *
+     * @return bool
+     */
+    public function isPaused()
+    {
+        // search for the first occurrence of a pause in the intermediate bookings
+        foreach ($this->getIntermediateBookings() as $intermediateBooking) {
+            if ($intermediateBooking instanceof Pause) {
+                if ($intermediateBooking->getTicketId() === Pause::PAUSE_TAG_START) {
+                    return true;
+                } elseif ($intermediateBooking->getTicketId() === Pause::PAUSE_TAG_END) {
+                    return false;
+                }
             }
         }
     }
