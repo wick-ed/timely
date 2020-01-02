@@ -83,7 +83,7 @@ EOF
      * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
      *
-     * @return void
+     * @return int
      *
      * {@inheritDoc}
      * @throws JiraException
@@ -146,10 +146,18 @@ EOF
             } catch (\Exception $e) {
                 $output->write(
                     sprintf(
-                        '<erro>Error while pushing. Status %s, with message: "%s"</erro>',
-                        $e->getCode(),
+                        '<error>Error while pushing. Status %s returned.</error>',
+                        $e->getCode()
+                    ),
+                    true
+                );
+                $output->write(
+                    sprintf(
+                        'Returned error: %s',
                         $e->getMessage()
-                    )
+                    ),
+                    true,
+                    64
                 );
             }
         }
@@ -162,6 +170,12 @@ EOF
         }
 
         // write output
-        $output->write(sprintf('Successfully pushed %s tasks.', count($bookingsPushed)), true);
+        if (empty($bookingsPushed)) {
+            $output->write('<comment>Did not push anything.</comment>', true);
+        } else {
+            $output->write(sprintf('Successfully pushed %s tasks.', count($bookingsPushed)), true);
+        }
+
+        return 0;
     }
 }
