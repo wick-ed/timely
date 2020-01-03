@@ -62,6 +62,7 @@ class Push extends AbstractReadCommand
         ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command is used to push tracked times to an external time keeping service.
 Jira being an example of a supported service.
+Using the push command requires configuration of the service's endpoint and possibly authentication within the <info>.env</info> configuration file.
 
 The command has the same syntax and usability as the <info>show</info> command.
 On execution the command will use the service's internal format to process all tracked times that a similar <info>show</info> command would have displayed.

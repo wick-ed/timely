@@ -89,7 +89,7 @@ This makes sense e.g. for a small break, lunch or simply for leaving work to con
 
   <info>timely %command.name% going for lunch</info>
 
-After the pause it over, the current tracking must be resumed:
+After the pause is over, the current tracking must be resumed:
 
   <info>timely %command.name% -r</info>
 
@@ -144,7 +144,6 @@ EOF
                 );
                 $storage->store($continuedBooking);
             }
-
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return 1;

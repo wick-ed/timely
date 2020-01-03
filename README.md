@@ -1,6 +1,6 @@
 # Timely
 
-Simple PHP console tool to track your times
+Simple PHP console tool to track your times and push them into a remote time-keeping tool such as Jira.
 
 ![Travis (.org) branch](https://img.shields.io/travis/wick-ed/timely/master.svg?style=flat-square)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/wick-ed/timely/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/wick-ed/timely/?branch=master)
@@ -11,10 +11,11 @@ Simple PHP console tool to track your times
 
 
 ## Semantic versioning
-This library follows semantic versioning and its public API defines as follows:
+This tool follows semantic versioning and its public API defines as follows:
 
 * The commands it exposes over the command line interface
 * The format of its storage file
+* The format of its configuration file and the given configuration options
 
 ## Usage
 
@@ -28,17 +29,27 @@ And use like:
 timely track FOO-127 bar
 ```
 
-# Commands
+## Commands
 
 There are several simple commands available, to track your everyday work:
 
 * [track](#track)
 * [show](#show)
 * [pause](#pause)
+* [push](#push)
 
-## track
+### track
 
 #### NAME
+
+The **show** command tracks an activity you just started
+This activity has to be in relation to an identifier such as a ticket ID from your ticket system.
+Although this is only to structure your tracked times, it will be used when interaction with an actual ticket system.
+
+An example call would be:
+
+  timely **show** FOO-42 Doing some stuff now
+
 
 **track** -- Track tickets you are starting to work on just now
 
@@ -48,17 +59,18 @@ timely **track** ticket-id comment
 
 #### DESCRIPTION
 
-Using **track** one can track the start of work on a certain ticket or issue. This will result in a timestamp indicating the start of time tracking for a certain ticket related task.
-**track** is a standalone command in itself. Every tracked activity will automatically end with the next execution of the **track** command.
+The **track** command tracks an activity you just started
+This activity has to be in relation to an identifier such as a ticket ID from your ticket system.
+Although this is only to structure your tracked times, it will be used when interaction with an actual ticket system.
 
 #### EXAMPLES
 
-Start tracking your work on ticket `SOMEPROJECT-42` leaving a comment
+Start tracking your work on ticket `FOO-42` leaving a comment
 ```
-timely track SOMEPROJECT-42 Starting to work on issue 42
+timely track FOO-42 Doing some stuff now
 ```
 
-## show
+### show
 
 #### NAME
 
@@ -66,49 +78,67 @@ timely track SOMEPROJECT-42 Starting to work on issue 42
 
 #### SYNOPSIS
 
-timely **show** \[yesterday|today|current|recent\] \[--tofrom\] \[ticket-id\]
+timely **show** \[yesterday|today|current\] \[-t|f|s\] \[--to|from|specific\] \[ticket-id\]
 
 #### DESCRIPTION
 
-The **show** command is used to show all, or only a certain sub-portion, of tracked tasks.
+The **show** command is used to display times you have already tracked.
+By default, these times are grouped by the (ticket) identifier you used for tracking.
+Example output would look like this:
 
-| Command      | Parameter  | Description                                                           |
-| -------------| -----------| ----------------------------------------------------------------------|
-| `--to`       | Date       | A date up to which tasks should be shown. Format should be Y-m-d      |
-| `--from`     | Date       | A date from which on tasks should be shown. Format should be Y-m-d    |
+```
+FOO-42     2019-11-28 17:41:17 -> 2019-11-29 15:59:25
+====================================================
+    * | 2019-11-28 17:41:17 | FOO-42 | 1h 15m | Doing some stuff now
+    -------------------------------------------------
+    1h 15m
+```
 
-The **show** command also accepts several keywords used for specific filtering of its output.
-
-| Keyword     | Description                                        |
-| ------------| ---------------------------------------------------|
-| `yesterday` | Will show all of yesterday's tracked tasks         |
-| `today`     | Will show all of today's tracked tasks             |
-| `current`   | Shows the task you are currently working on        |
-| `recent`    | Shows the three most recent                        |
+Only tracked activities that already last or lasted longer than 15 minutes are shown.
 
 #### EXAMPLES
 
-Show all tracked tasks related to the ticket with the ID `SOMEPROJECT-42`:
+The tracked times in question can also be filter by supplying the optional (ticket) identifier:
 ```
-timely show SOMEPROJECT-42
+timely show FOO-42
 ```
-
-Show all tracked tasks filtered by a pattern
+You can further filter by narrowing the time interval.
+This can be done by using supplied filter keywords current, today or yesterday:
 ```
-timely show SOMEPROJECT*
+timely show current
 ```
-
-Show all tasks which where tracked yesterday:
+or
 ```
 timely show yesterday
 ```
 
-Show all tracked tasks from 24. January 2016 to 31. January 2016:
+This filters for the tracking currently active (as in "what you are currently doing") or all tracked times of yesterday.
+
+Filtering the processed time trackings is also possible through the **from**, **to** and **specific** options.
+These options support the PHp date and time format as described here: https://www.php.net/manual/en/datetime.formats.php
+This allows for refined filtering as shown in the examples below.
+
+Filter for a certain specific date:
 ```
-timely show --from 2016-01-24 --to 2016-01-31
+timely show -s 2019-11-28
 ```
 
-## pause
+Filter for a given time range:
+```
+timely show -f 2019-11-28 -t 2019-11-30
+```
+
+Filter for the last week:
+```
+timely show -f"-1 week"
+```
+
+Filter for everything within the last October:
+```
+timely show -f"first day of october" -t"last day of october"
+```
+
+### pause
 
 #### NAME
 
@@ -116,24 +146,126 @@ timely show --from 2016-01-24 --to 2016-01-31
 
 #### SYNOPSIS
 
-timely **pause** \[--resume|comment\]
+timely **pause** \[-r|--resume|comment\]
 
 #### DESCRIPTION
 
-Allows to pause a currently tracked task. Will pause time tracking until explicitly resumed, again with the **pause** command.
+The **pause** command allows to pause the tracking of your current task.
+This makes sense e.g. for a small break, lunch or simply for leaving work to continue the next morning.
+```
+timely pause going for lunch
+```
 
-| Command    | Description                                 |
-| -----------| --------------------------------------------|
-| `--resume` | Resumes a previously paused task            |
+After the pause is over, the current tracking must be resumed:
+```
+timely pause -r
+```
+
+If you start with something else, using the **track** command during an ongoing pause will also end the pause automatically.
 
 #### EXAMPLES
 
-Pause a currently tracked task:
+See above.
+
+### push
+
+#### NAME
+
+**push** -- Pushes booked times against the configured remote
+
+#### SYNOPSIS
+
+timely **push** \[yesterday|today|current\] \[-t|f|s\] \[--to|from|specific\] \[ticket-id\]
+
+#### DESCRIPTION
+
+The **push** command is used to push tracked times to an external time keeping service.
+Jira being an example of a supported service.
+Using the push command requires configuration of the service's endpoint and possibly authentication within the `.env` configuration file.
+
+The command has the same syntax and usability as the **show** command.
+On execution the command will use the service's internal format to process all tracked times that a similar **show** command would have displayed.
+
+The following command would create e.g. Jira worklogs for yesterday's tasks:
 ```
-timely pause Going for lunch
+timely push yesterday
 ```
 
-Resume a previously paused task
+The **push** command keeps track of already pushed time trackings so nothing gets pushed twice.
+
+#### EXAMPLES
+
+The tracked times in question can also be filter by supplying the optional (ticket) identifier:
 ```
-timely pause --resume
+timely push FOO-42
+```
+You can further filter by narrowing the time interval.
+This can be done by using supplied filter keywords current, today or yesterday:
+```
+timely push current
+```
+or
+```
+timely push yesterday
+```
+
+This filters for the tracking currently active (as in "what you are currently doing") or all tracked times of yesterday.
+
+Filtering the processed time trackings is also possible through the **from**, **to** and **specific** options.
+These options support the PHp date and time format as described here: https://www.php.net/manual/en/datetime.formats.php
+This allows for refined filtering as shown in the examples below.
+
+Filter for a certain specific date:
+```
+timely push -s 2019-11-28
+```
+
+Filter for a given time range:
+```
+timely push -f 2019-11-28 -t 2019-11-30
+```
+
+Filter for the last week:
+```
+timely push -f"-1 week"
+```
+
+Filter for everything within the last October:
+```
+timely push -f"first day of october" -t"last day of october"
+```
+
+## Storage format
+
+By default tracking data is stored within a simple text file called `timely-log.txt` within the `data` directory.
+Storage was intentionally kept this simple so manipulating your trackings could be done with text editors only.
+This allows for maximal flexibility, but lacks some of the more sophisticated features a database would give us.
+Trackings are saved chronologically with the most recent tracking on top.
+Also to allow for easy manual manipulation.
+
+Working with the storage file always requires knowledge of the format in which trackings are saved.
+
+Trackings are based on the following synopsis:
+
+```
+<date and time a tracking occured> |<identifier e.g. a ticket number> | <comment> | [<push status for remote services>];
+```
+
+An example tracking looks like this:
+```
+2019-11-28 17:41:17 | FOO-42 | Doing some stuff now | ;
+```
+
+An example tracking which was already pushed to a remote time-keeping service (Jira in this example) looks like this:
+```
+2019-11-28 17:41:17 | FOO-42 | Doing some stuff now | jira 2019-11-28 19:27:17;
+```
+
+This contains the name of the service and a timestamp of the actual push.
+
+Pauses utilized by the **pause** command have the same format, but use a specific identifier so they can be identified as meta information.
+An example of a pause (e.g. for a lunch break) containing start and end looks like this:
+```
+2019-11-28 12:41:17 | --pe-- |  | ;
+2019-11-28 12:00:17 | --ps-- | lunch | ;
 ```
