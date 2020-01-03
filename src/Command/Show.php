@@ -85,7 +85,7 @@ EOF
      * @param \Symfony\Component\Console\Input\InputInterface   $input  The command input
      * @param \Symfony\Component\Console\Output\OutputInterface $output The command output
      *
-     * @return void
+     * @return int
      *
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::execute()
@@ -121,5 +121,6 @@ EOF
 
         // write output
         $output->write($text, true);
+        return 0;
     }
 }
