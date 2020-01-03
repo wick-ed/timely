@@ -24,6 +24,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Wicked\Timely\Entities\Booking;
 use Wicked\Timely\Storage\StorageFactory;
 use Wicked\Timely\Entities\Pause as PauseEntity;
 
@@ -132,6 +133,18 @@ EOF
             // get the configured storage instance and store the booking
             $storage = StorageFactory::getStorage();
             $storage->store($pause);
+
+            // might be a good idea to re-track what we last did to avoid clipping issues
+            if ($pause->getTicketId() === PauseEntity::PAUSE_TAG_END) {
+                $lastBooking = $storage->retrieveLast();
+                $continuedBooking = new Booking(
+                    $lastBooking->getComment(),
+                    $lastBooking->getTicketId(),
+                    strtotime($pause->getTime())+1
+                );
+                $storage->store($continuedBooking);
+            }
+
         } catch (\Exception $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return 1;
