@@ -20,7 +20,7 @@ use Wicked\Timely\Command\Push;
 
 $application = new Application();
 $application->setName('timely');
-$application->setVersion('2.1.1');
+$application->setVersion('2.1.2');
 $application->addCommands(
     array(
         new Track(),
