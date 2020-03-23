@@ -116,7 +116,7 @@ EOF
             // get the configured storage instance and store the booking
             $storage = StorageFactory::getStorage();
             $lastBooking = $storage->retrieveLast(true);
-            if ($lastBooking->getTicketId() === PauseEntity::PAUSE_TAG_START) {
+            if ($lastBooking instanceof Booking && $lastBooking->getTicketId() === PauseEntity::PAUSE_TAG_START) {
                 // create a new pause instance
                 $now = new \DateTime();
                 $pause = new PauseEntity('', true, $now->getTimestamp()-1);
