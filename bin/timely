@@ -17,16 +17,22 @@ use Wicked\Timely\Command\Track;
 use Wicked\Timely\Command\Show;
 use Wicked\Timely\Command\Pause;
 use Wicked\Timely\Command\Push;
+use Wicked\Timely\Command\SelfCheck;
+use Wicked\Timely\Helper\SelfCheck as SelfCheckHelper;
 
 $application = new Application();
 $application->setName('timely');
-$application->setVersion('2.1.3');
+$application->setVersion('2.2.0');
 $application->addCommands(
     array(
         new Track(),
         new Show(),
         new Pause(),
         new Push(),
+        new SelfCheck(),
     )
 );
+// automatically check for a newer version
+SelfCheckHelper::autoCheck($application);
+
 $application->run();
