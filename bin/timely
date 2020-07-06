@@ -10,7 +10,12 @@ if (is_link(__FILE__)) {
     $dir = dirname(readlink(__FILE__));
 }
 
-require $dir . '/../vendor/autoload.php';
+$autoloadFile = $dir . '/../vendor/autoload.php';
+if (!file_exists($autoloadFile)){
+    echo 'Autoload error: Vendor autoload is not found. Please run \'composer install\' under application root directory.';
+    exit(1);
+}
+require $autoloadFile;
 
 use Symfony\Component\Console\Application;
 use Wicked\Timely\Command\Track;
