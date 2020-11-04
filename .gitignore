@@ -12,7 +12,6 @@
 /.project
 /.settings
 /.pydevproject
-composer.lock
 build.properties
 jmeter.log
 .DS_Store
