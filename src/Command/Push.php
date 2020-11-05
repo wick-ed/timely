@@ -131,22 +131,22 @@ EOF
             }
 
             try {
+                $output->writeln(
+                    sprintf(
+                        'Start pushing %s : %s > %s',
+                        $task->getTicketId(),
+                        $task->getDuration(),
+                        $task->getComment()
+                    )
+                );
                 $result = $pushService->push($task);
                 if ($result) {
                     $bookingsPushed[] = $task->getStartBooking();
-                    $output->writeln(
-                        sprintf(
-                            'PUSHED %s : %s > %s',
-                            $task->getTicketId(),
-                            $task->getDuration(),
-                            $task->getComment()
-                        )
-                    );
                 }
             } catch (\Exception $e) {
                 $output->write(
                     sprintf(
-                        '<error>Error while pushing. Status %s returned.</error>',
+                        '<error>Error while pushing. Status %s returned </error>',
                         $e->getCode()
                     ),
                     true
@@ -167,7 +167,7 @@ EOF
             $storage->storePush($booking);
             $formatter = FormatterFactory::getFormatter();
             $bookString = $formatter->toString($booking);
-            $output->write($bookString, true);
+            $output->writeln($bookString, OutputInterface::VERBOSITY_VERY_VERBOSE);
         }
 
         // if the last task has been cut off by pushing we will re-add it's start booking
