@@ -19,7 +19,7 @@
   "require": {
     "php" : "^7.1",
     "symfony/console": "^5.0",
-    "lesstif/php-jira-rest-client": "^1.33",
+    "lesstif/php-jira-rest-client": "^2.0",
     "knplabs/packagist-api": "^1.5"
   },
   "require-dev": {
