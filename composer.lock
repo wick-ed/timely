@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8adc819db318fea409377894933b139",
+    "content-hash": "2e7f38f56a85839a27bb6b2dbaf20a66",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -541,16 +541,16 @@
         },
         {
             "name": "lesstif/php-jira-rest-client",
-            "version": "2.6.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lesstif/php-jira-rest-client.git",
-                "reference": "e650cf1eb9eddbae7f9560b2b161a643caaad4ca"
+                "reference": "05d583fbb94e5a10915ae25b329d13297789258f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lesstif/php-jira-rest-client/zipball/e650cf1eb9eddbae7f9560b2b161a643caaad4ca",
-                "reference": "e650cf1eb9eddbae7f9560b2b161a643caaad4ca",
+                "url": "https://api.github.com/repos/lesstif/php-jira-rest-client/zipball/05d583fbb94e5a10915ae25b329d13297789258f",
+                "reference": "05d583fbb94e5a10915ae25b329d13297789258f",
                 "shasum": ""
             },
             "require": {
@@ -600,9 +600,9 @@
             ],
             "support": {
                 "issues": "https://github.com/lesstif/php-jira-rest-client/issues",
-                "source": "https://github.com/lesstif/php-jira-rest-client/tree/2.6.0"
+                "source": "https://github.com/lesstif/php-jira-rest-client/tree/3.1.1"
             },
-            "time": "2021-09-21T14:42:49+00:00"
+            "time": "2022-05-18T15:12:27+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3569,5 +3569,5 @@
         "php": "^7.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
