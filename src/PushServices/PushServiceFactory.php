@@ -54,7 +54,7 @@ class PushServiceFactory
         $pushService = $configuration->getPushService();
         switch ($pushService) {
             case 'jira':
-                $pushService = new Jira($passwordRetrievalStrategy);
+                $pushService = new Jira($passwordRetrievalStrategy, $configuration);
                 break;
 
             default:

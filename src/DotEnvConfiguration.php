@@ -30,8 +30,16 @@ use JiraRestApi\Configuration\DotEnvConfiguration as JiraDotEnvConfiguration;
  */
 class DotEnvConfiguration extends JiraDotEnvConfiguration
 {
+    const WORKLOG_FORMAT = 'jira';
+    const PUSH_SERVICE = 'jira';
+    const TEMPO_BLACKLIST_BILLABLE = [];
 
-    protected $pushService;
+    /** @var bool|mixed|string|null  */
+    protected $pushService = '';
+    /** @var bool|mixed|string|null  */
+    protected $worklogFormat = '';
+    /** @var array  */
+    protected $tempoBlacklistBillable = [];
 
     /**
      * DotEnvConfiguration constructor.
@@ -44,6 +52,8 @@ class DotEnvConfiguration extends JiraDotEnvConfiguration
     {
         parent::__construct(realpath(__DIR__ . '/../'));
         $this->pushService = $this->env('PUSH_SERVICE');
+        $this->worklogFormat = $this->env('WORKLOG_FORMAT');
+        $this->tempoBlacklistBillable = $this->env('TEMPO_BLACKLIST_BILLABLE');
     }
 
     /**
@@ -92,7 +102,23 @@ class DotEnvConfiguration extends JiraDotEnvConfiguration
      */
     public function getPushService()
     {
-        return $this->pushService;
+        return empty($this->pushService) ? self::PUSH_SERVICE : $this->pushService;
+    }
+
+    /**
+     * @return bool|mixed|string|null
+     */
+    public function getWorklogFormat()
+    {
+        return empty($this->worklogFormat) ? self::WORKLOG_FORMAT : $this->worklogFormat;
+    }
+
+    /**
+     * @return bool|mixed|string|null
+     */
+    public function getTempoBlacklistBillable()
+    {
+        return empty($this->tempoBlacklistBillable) ? self::TEMPO_BLACKLIST_BILLABLE : explode(',', $this->tempoBlacklistBillable);
     }
 
     /**
