@@ -131,7 +131,7 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
             // push to remote
             $this->issueService->addWorklog($task->getTicketId(), $workLog);
         }
-        return false;
+        return true;
     }
 
     /**
