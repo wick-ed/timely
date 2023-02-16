@@ -1,0 +1,7 @@
+services:
+  composer:
+    version: 2
+  node:
+    version: 14
+  php:
+    version: 8.1

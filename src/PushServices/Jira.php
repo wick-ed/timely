@@ -36,7 +36,7 @@ use Wicked\Timely\PushServices\Authentication\PasswordRetrievalStrategyInterface
  */
 class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterface
 {
-
+    const WORKLOG_TEMPO_FORMAT = 'tempo';
     /**
      * @var IssueService
      */
@@ -48,15 +48,26 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
     protected $passwordRetrievalStrategy;
 
     /**
+     * @var TempoWorklogService
+     */
+    protected $tempoWorklogService;
+
+    /**
+     * @var string
+     */
+    private $configuration;
+
+    /**
      * Jira constructor.
      *
      * @param PasswordRetrievalStrategyInterface $passwordRetrievalStrategy
      *
      * @throws \JiraRestApi\JiraException
      */
-    public function __construct(PasswordRetrievalStrategyInterface $passwordRetrievalStrategy)
+    public function __construct(PasswordRetrievalStrategyInterface $passwordRetrievalStrategy, DotEnvConfiguration $configuration)
     {
         $this->passwordRetrievalStrategy = $passwordRetrievalStrategy;
+        $this->configuration = $configuration;
         $this->init();
     }
 
@@ -67,18 +78,20 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
      */
     protected function init()
     {
-        // retrieve configuration
-        $configuration = new DotEnvConfiguration();
-        $password = $configuration->getJiraPassword();
+        $password = $this->configuration->getJiraPassword();
         if (empty($password)) {
             $password = $this->passwordRetrievalStrategy->getPassword();
-            //$password = $this->getPasswordFromKeychain($configuration);
+            //$password = $this->getPasswordFromKeychain($this->configuration);
             if (empty($password)) {
                 return;
             }
-            $configuration->setJiraPassword($password);
+            $this->configuration->setJiraPassword($password);
         }
-        $this->issueService = new IssueService($configuration);
+        if ($this->configuration->getWorklogFormat() === self::WORKLOG_TEMPO_FORMAT) {
+            $this->tempoWorklogService = new TempoWorklogService($this->configuration);
+            $this->tempoWorklogService->setAPIUri('/rest/tempo-timesheets/4');
+        }
+        $this->issueService = new IssueService($this->configuration);
     }
 
     /**
@@ -93,18 +106,97 @@ class Jira implements PushServiceInterface, AuthenticationAwarePushServiceInterf
     public function push(Task $task)
     {
         // create a worklog from the task
-        $workLog = new Worklog();
-        $workLog->setComment($task->getComment())
-            ->setStarted($task->getStartTime())
-            ->setTimeSpent(Date::secondsToUnits(Date::roundByInterval($task->getDuration(), 900)));
+        $timeSpend = Date::roundByInterval($task->getDuration(), 900);
+        $comment = $task->getComment();
 
         // check the sanity of our worklog and discard it if there is something missing
-        if (!$task->getTicketId() || empty($workLog->timeSpent) || empty($workLog->comment)) {
+        if (!$task->getTicketId() || empty($timeSpend) || empty($comment)) {
             throw new \Exception('Not pushing one worklog as it misses vital information');
         }
 
-        // push to remote
-        $this->issueService->addWorklog($task->getTicketId(), $workLog);
+        if ($this->configuration->getWorklogFormat() === self::WORKLOG_TEMPO_FORMAT) {
+            // Update Starttime in Jira. Tempo has only date, not time
+            $tempoWorklogResult = $this->createTempoWorklog($task, $timeSpend);
+
+            // Update Starttime in Jira. Tempo has only date, not time
+            $workLog = new Worklog();
+            $workLog->setStarted($task->getStartTime());
+            // push to remote
+            $this->issueService->editWorklog($task->getTicketId(), $workLog, $tempoWorklogResult->originId);
+        } else {
+            $workLog = new Worklog();
+            $workLog->setComment($comment)
+                ->setStarted($task->getStartTime())
+                ->setTimeSpent(Date::secondsToUnits($timeSpend));
+            // push to remote
+            $this->issueService->addWorklog($task->getTicketId(), $workLog);
+        }
         return true;
+    }
+
+    /**
+     * @param Task $task
+     * @param $timeSpend
+     * @return TempoWorklog
+     * @throws \JiraRestApi\JiraException
+     * @throws \JsonMapper_Exception
+     */
+    protected function createTempoWorklog(Task $task, $timeSpend)
+    {
+        $tempoWorklog = new TempoWorklog();
+        $tempoWorklog->setComment($task->getComment())
+            ->setStarted($task->getStartTime())
+            ->setTimeSpentSeconds($timeSpend)
+            ->setBillableSeconds($this->getBillableBlacklist($task->getTicketId(), $timeSpend))
+            ->setOriginTaskId($task->getTicketId())
+            ->setWorker($this->configuration->getJiraUser())
+            ->setAttributes($this->generateAttributes('_Account_', ''));
+        // push to remote
+        $tempoWorklogResult = $this->tempoWorklogService->addWorklog($tempoWorklog);
+        // Check if account Attribute to set
+        if (!empty($tempoWorklogResult->issue->accountKey)) {
+            $tempoWorklog->setAttributes($this->generateAttributes('_Account_', $tempoWorklogResult->issue->accountKey));
+            // push change to remote
+            $tempoWorklogResult = $this->tempoWorklogService->editWorklog(
+                $tempoWorklog,
+                $tempoWorklogResult->tempoWorklogId
+            );
+        }
+        return $tempoWorklogResult;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array[]
+     */
+    protected function generateAttributes($key, $value): array
+    {
+        return [
+            $key => [
+                'key' => $key,
+                'value' => $value
+            ]
+        ];
+    }
+
+    /**
+     * @param string $issue
+     * @param int $seconds
+     * @return int
+     */
+    protected function getBillableBlacklist($issue, $seconds) {
+        foreach($this->configuration->getTempoBlacklistBillable() as $blacklistPattern) {
+            if (empty(trim($blacklistPattern))) {
+                continue;
+            }
+            $matches = [];
+            preg_match($blacklistPattern, $issue, $matches);
+            if (count($matches) === 1) {
+                return 0;
+            }
+        }
+
+        return $seconds;
     }
 }
