@@ -19,6 +19,8 @@
 
 namespace Wicked\Timely;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Wicked\Timely\Entities\TaskFactory;
 
 /**
@@ -29,11 +31,17 @@ use Wicked\Timely\Entities\TaskFactory;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class FunctionalTest extends \PHPUnit_Framework_TestCase {
+class FunctionalTest extends TestCase
+{
 
-    public function fileStorageTaskGenerationProvider() {
+    /**
+     * @return array[]
+     */
+    public static function fileStorageTaskGenerationProvider(): array
+    {
         return array(
-            array('2016-07-26 18:38:16 | --ps-- | break;
+            array(
+                '2016-07-26 18:38:16 | --ps-- | break;
                 2016-07-26 17:57:36 | TEST-10 | work;
                 2016-07-26 17:57:35 | --pe-- | ;
                 2016-07-26 17:34:52 | --ps-- | break;
@@ -62,8 +70,10 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
                     'TEST-7' => 2605, // 5m 2s + 38m 23s
                     'TEST-8' => 8108, // 2h 15m 8s
                     'TEST-10' => 2440 // 40m 40s
-                )),
-            array('2016-07-26 13:41:49 | --ps-- | break;
+                )
+            ),
+            array(
+                '2016-07-26 13:41:49 | --ps-- | break;
             2016-07-26 10:38:17 | TEST-3 | work;
             2016-07-26 10:18:45 | TEST-2 | work;
             2016-07-26 08:37:56 | --pe-- | ;
@@ -89,11 +99,13 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
 
     /**
      *
-     * @return type
+     * @return array[]
      */
-    public function fileStorageTaskClippingProvider() {
+    public static function fileStorageTaskClippingProvider(): array
+    {
         return array(
-            array(1469491200,
+            array(
+                1469491200,
                 '2016-07-26 18:38:16 | --ps-- | break;
             2016-07-26 17:57:36 | TEST-3 | work;
             2016-07-26 13:55:58 | TEST-2 | work;
@@ -104,8 +116,10 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
                     'TEST-1' => 14530, // 4h 2m 10s
                     'TEST-2' => 14498, // 4h 1m 38s
                     'TEST-3' => 2440 // 40m 40s
-                )),
-            array(1469491200,
+                )
+            ),
+            array(
+                1469491200,
                 '2016-07-26 18:38:16 | --ps-- | break;
             2016-07-26 13:55:58 | TEST-2 | work;
             2016-07-26 09:53:48 | --pe-- | ;
@@ -114,23 +128,30 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
                 array(
                     'TEST-1' => 14530, // 4h 2m 10s
                     'TEST-2' => 16938, // 4h 42m 18s
-                ))
+                )
+            )
         );
     }
 
     /**
+     * @param string $testContent
+     * @param int $taskCount
+     * @param array $expectedDurations
+     * @return void
+     *
      * @dataProvider fileStorageTaskGenerationProvider
      */
-    public function testFileStorageTaskGeneration($testContent, $taskCount, $expectedDurations) {
+    public function testFileStorageTaskGeneration(string $testContent, int $taskCount, array $expectedDurations): void
+    {
         // get us a mocked file storage with our content
         $classToMock = '\Wicked\Timely\Storage\File';
-        /** @var \Wicked\Timely\Storage\File $mockFileStorage */
+        /** @var \Wicked\Timely\Storage\File|MockObject $mockFileStorage */
         $mockFileStorage = $this->getMockBuilder($classToMock)
-                ->setMethods(array('getStorageContent'))
-                ->getMock();
+            ->onlyMethods(array('getStorageContent'))
+            ->getMock();
         $mockFileStorage->expects($this->once())
-                ->method('getStorageContent')
-                ->will($this->returnValue($testContent));
+            ->method('getStorageContent')
+            ->willReturn($testContent);
 
         // generate the tasks
         $bookings = $mockFileStorage->retrieve();
@@ -153,18 +174,27 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * @param int $clippingFromDate
+     * @param string $testContent
+     * @param array $expectedDurations
+     * @return void
+     *
      * @dataProvider fileStorageTaskClippingProvider
      */
-    public function testTaskRetrievalWithLeadingClipping($clippingFromDate, $testContent, $expectedDurations) {
+    public function testTaskRetrievalWithLeadingClipping(
+        int $clippingFromDate,
+        string $testContent,
+        array $expectedDurations
+    ): void {
         // get us a mocked file storage with our content
         $classToMock = '\Wicked\Timely\Storage\File';
-        /** @var \Wicked\Timely\Storage\File $mockFileStorage */
+        /** @var \Wicked\Timely\Storage\File|MockObject $mockFileStorage */
         $mockFileStorage = $this->getMockBuilder($classToMock)
-                ->setMethods(array('getStorageContent'))
-                ->getMock();
+            ->onlyMethods(array('getStorageContent'))
+            ->getMock();
         $mockFileStorage->expects($this->once())
-                ->method('getStorageContent')
-                ->will($this->returnValue($testContent));
+            ->method('getStorageContent')
+            ->willReturn($testContent);
 
         // generate the tasks
         $bookings = $mockFileStorage->retrieve($pattern = null, $toDate = null, $clippingFromDate);
@@ -175,5 +205,4 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase {
             $this->assertEquals($expectedDurations[$task->getStartBooking()->getTicketId()], $task->getDuration());
         }
     }
-
 }

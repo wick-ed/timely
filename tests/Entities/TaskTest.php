@@ -19,6 +19,8 @@
 
 namespace Wicked\Timely\Entities;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit-Test class for the "Task" entity
  *
@@ -27,7 +29,7 @@ namespace Wicked\Timely\Entities;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/wick-ed/timely
  */
-class TaskTest extends \PHPUnit_Framework_TestCase
+class TaskTest extends TestCase
 {
 
     /**
@@ -35,7 +37,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $this->assertInstanceOf(
             '\Wicked\Timely\Entities\Task',
@@ -50,9 +52,9 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for the testGetDurationWithNoSpecialCase method
      *
-     * @return array
+     * @return array[]
      */
-    public function getDurationWithNoSpecialCaseProvider()
+    public static function getDurationWithNoSpecialCaseProvider(): array
     {
         return array(
             array(1465128900, 1465128998, 98),
@@ -63,15 +65,15 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     /**
      * Testing if the duration is calculated and returned correctly
      *
-     * @param integer $startTime Start time in seconds
-     * @param integer $endTime   End time in seconds
-     * @param integer $duration  Duration in seconds
+     * @param int $startTime Start time in seconds
+     * @param int $endTime   End time in seconds
+     * @param int $duration  Duration in seconds
      *
      * @return void
      *
      * @dataProvider getDurationWithNoSpecialCaseProvider
      */
-    public function testGetDurationWithNoSpecialCase($startTime, $endTime, $duration)
+    public function testGetDurationWithNoSpecialCase(int $startTime, int $endTime, int $duration): void
     {
         // get two bookings to make up the task
         $startBooking = new Booking(
@@ -95,7 +97,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testGetDurationWithOneIntermediateTask()
+    public function testGetDurationWithOneIntermediateTask(): void
     {
         // get two bookings to make up the task
         $startBooking = new Booking(
@@ -123,7 +125,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testGetDurationWithTwoIntermediateTasks()
+    public function testGetDurationWithTwoIntermediateTasks(): void
     {
         // get two bookings to make up the task
         $startBooking = new Booking(

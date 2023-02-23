@@ -32,4 +32,5 @@ www/
 /nbproject/private/
 
 .phpunit.result.cache
+.phpunit.cache
 phpunit.xml.bak
