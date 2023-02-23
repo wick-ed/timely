@@ -27,7 +27,7 @@ use Wicked\Timely\Helper\SelfCheck as SelfCheckHelper;
 
 $application = new Application();
 $application->setName('timely');
-$application->setVersion('2.2.0');
+$application->setVersion('3.0.1');
 $application->addCommands(
     array(
         new Track(),

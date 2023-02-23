@@ -30,3 +30,6 @@ www/
 *.DS_Store
 *.log
 /nbproject/private/
+
+.phpunit.result.cache
+phpunit.xml.bak
